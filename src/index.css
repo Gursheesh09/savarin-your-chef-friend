@@ -8,50 +8,66 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Savarin Design System - Warm Cooking Theme */
+    --background: 34 30% 98%;
+    --foreground: 28 15% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 34 30% 98%;
+    --card-foreground: 28 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 34 30% 98%;
+    --popover-foreground: 28 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Warm Apricot */
+    --primary: 25 85% 65%;
+    --primary-foreground: 34 30% 98%;
+    --primary-glow: 25 90% 75%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Soft Cream */
+    --secondary: 34 40% 92%;
+    --secondary-foreground: 28 15% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Light Neutral */
+    --muted: 34 20% 90%;
+    --muted-foreground: 28 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Deep Olive */
+    --accent: 85 20% 25%;
+    --accent-foreground: 34 30% 98%;
+
+    /* Charcoal for headings */
+    --charcoal: 28 25% 12%;
+    --charcoal-foreground: 34 30% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 34 25% 85%;
+    --input: 34 25% 85%;
+    --ring: 25 85% 65%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(25 85% 65%), hsl(25 90% 75%));
+    --gradient-warm: linear-gradient(180deg, hsl(34 30% 98%), hsl(34 40% 95%));
+    --gradient-subtle: linear-gradient(135deg, hsl(34 40% 92%), hsl(34 30% 95%));
+
+    /* Shadows */
+    --shadow-warm: 0 10px 30px -10px hsl(25 85% 65% / 0.2);
+    --shadow-elevated: 0 20px 40px -15px hsl(28 25% 12% / 0.1);
+    --shadow-glow: 0 0 40px hsl(25 90% 75% / 0.3);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
