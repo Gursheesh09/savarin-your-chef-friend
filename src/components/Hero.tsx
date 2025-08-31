@@ -1,18 +1,13 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-cooking.jpg";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+  
   const handleBeginCooking = () => {
-    const howItWorksSection = document.getElementById('how-it-works');
-    if (howItWorksSection) {
-      howItWorksSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      toast({
-        title: "Coming Soon!",
-        description: "Savarin is launching soon. Join our waitlist to be first to cook with AI.",
-      });
-    }
+    navigate('/demo');
   };
 
   const handleTalkWithSavarin = () => {
