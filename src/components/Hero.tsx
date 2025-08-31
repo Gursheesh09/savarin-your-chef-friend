@@ -1,7 +1,31 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-cooking.jpg";
+import { toast } from "@/hooks/use-toast";
 
 export const Hero = () => {
+  const handleBeginCooking = () => {
+    const howItWorksSection = document.getElementById('how-it-works');
+    if (howItWorksSection) {
+      howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      toast({
+        title: "Coming Soon!",
+        description: "Savarin is launching soon. Join our waitlist to be first to cook with AI.",
+      });
+    }
+  };
+
+  const handleTalkWithSavarin = () => {
+    toast({
+      title: "Chat Demo",
+      description: "Voice chat feature coming soon! For now, explore how Savarin works below.",
+    });
+    const featuresSection = document.getElementById('core-features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-warm overflow-hidden">
       {/* Background Image */}
@@ -29,10 +53,10 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <Button variant="hero" size="xl" className="min-w-48">
+          <Button variant="hero" size="xl" className="min-w-48" onClick={handleBeginCooking}>
             Begin Cooking
           </Button>
-          <Button variant="warm" size="xl" className="min-w-48">
+          <Button variant="warm" size="xl" className="min-w-48" onClick={handleTalkWithSavarin}>
             Talk with Savarin
           </Button>
         </div>
@@ -44,7 +68,7 @@ export const Hero = () => {
       
       {/* Mobile Sticky CTA */}
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
-        <Button variant="hero" size="lg" className="shadow-elevated rounded-full">
+        <Button variant="hero" size="lg" className="shadow-elevated rounded-full" onClick={handleBeginCooking}>
           Begin Cooking
         </Button>
       </div>

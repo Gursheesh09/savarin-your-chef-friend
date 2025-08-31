@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Brain, Shuffle, ChefHat } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const coreFeatures = [
   {
@@ -26,8 +27,15 @@ const coreFeatures = [
 ];
 
 export const CoreFeatures = () => {
+  const handleBeginCooking = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Savarin is launching soon. Join our waitlist to be first to cook with AI.",
+    });
+  };
+
   return (
-    <section className="py-20 px-6 bg-gradient-warm">
+    <section id="core-features" className="py-20 px-6 bg-gradient-warm">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6">
@@ -60,7 +68,7 @@ export const CoreFeatures = () => {
         </div>
         
         <div className="text-center">
-          <Button variant="hero" size="xl" className="mb-4">
+          <Button variant="hero" size="xl" className="mb-4" onClick={handleBeginCooking}>
             Begin Cooking
           </Button>
           <p className="text-sm text-muted-foreground">
