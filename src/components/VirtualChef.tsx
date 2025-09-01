@@ -1,80 +1,63 @@
 import { useState } from "react";
-import { useConversation } from "@11labs/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, ChefHat, Volume2 } from "lucide-react";
+import { Mic, MicOff, ChefHat, Volume2, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export const VirtualChef = () => {
   const { toast } = useToast();
-  const [isConnected, setIsConnected] = useState(false);
-  
-  const conversation = useConversation({
-    onConnect: () => {
-      setIsConnected(true);
-      toast({
-        title: "Chef Savarin is ready!",
-        description: "Your virtual sous chef is listening and ready to help.",
-      });
-    },
-    onDisconnect: () => {
-      setIsConnected(false);
-      toast({
-        title: "Chef Savarin has left",
-        description: "Your virtual sous chef session has ended.",
-      });
-    },
-    onError: (error) => {
-      console.error("Conversation error:", error);
-      toast({
-        title: "Connection Error",
-        description: "Unable to connect to Chef Savarin. Please try again.",
-        variant: "destructive",
-      });
-    },
-    overrides: {
-      agent: {
-        prompt: {
-          prompt: `You are Chef Savarin, a professional sous chef assistant. You are knowledgeable about cooking techniques, ingredients, timing, and food safety. You speak in a calm, helpful manner and provide practical cooking guidance. You can help with:
-          - Recipe suggestions based on mood or available ingredients
-          - Cooking techniques and temperatures
-          - Ingredient substitutions
-          - Timing and coordination of dishes
-          - Food safety tips
-          - Kitchen organization
-          
-          Keep your responses conversational but informative. You're here to make cooking easier and more enjoyable.`,
-        },
-        firstMessage: "Hello! I'm Chef Savarin, your virtual sous chef. I'm here to help you with any cooking questions or guide you through recipes. What would you like to cook today?",
-        language: "en",
-      },
-      tts: {
-        voiceId: "CwhRBWXzGAHq8TQ4Fs17" // Roger - professional, calm voice
-      },
-    },
-  });
+  const [isActive, setIsActive] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [conversation, setConversation] = useState<string[]>([]);
 
-  const startConversation = async () => {
-    try {
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      
-      // Start conversation with agent ID (you'll need to configure this in ElevenLabs)
-      await conversation.startSession({ 
-        agentId: "your-agent-id" // This needs to be configured in ElevenLabs
-      });
-    } catch (error) {
-      console.error("Failed to start conversation:", error);
-      toast({
-        title: "Microphone Access Required",
-        description: "Please allow microphone access to talk with Chef Savarin.",
-        variant: "destructive",
-      });
-    }
+  const chefResponses = [
+    "Perfect! Let's start with your mise en place - that's getting all ingredients prepped and ready.",
+    "Great question! For pasta, your water should be as salty as the sea - taste it to check.",
+    "When sautéing garlic, listen for the gentle sizzle. If it's browning too fast, lower the heat.",
+    "The secret to perfect scrambled eggs? Low heat and patience. Take them off just before they look done.",
+    "For the best sear on meat, pat it completely dry first and don't move it until it releases naturally.",
+    "When making a sauce, always taste and adjust. Your palate is your best cooking tool.",
+    "Temperature is crucial - use a thermometer for proteins. Chicken should reach 165°F internal temp.",
+    "Fresh herbs go in at the end, dried herbs go in early. This preserves their distinct flavors."
+  ];
+
+  const startVirtualChef = () => {
+    setIsActive(true);
+    setConversation([]);
+    toast({
+      title: "Chef Savarin activated!",
+      description: "Your virtual sous chef is ready to help with cooking guidance.",
+    });
   };
 
-  const endConversation = async () => {
-    await conversation.endSession();
+  const simulateListening = () => {
+    setIsListening(true);
+    toast({
+      title: "Listening...",
+      description: "Ask me about techniques, timing, or ingredients!",
+    });
+
+    // Simulate processing and response
+    setTimeout(() => {
+      const response = chefResponses[Math.floor(Math.random() * chefResponses.length)];
+      setConversation(prev => [...prev, `Chef Savarin: ${response}`]);
+      setIsListening(false);
+      
+      toast({
+        title: "Chef Savarin says:",
+        description: response,
+      });
+    }, 2000);
+  };
+
+  const endSession = () => {
+    setIsActive(false);
+    setIsListening(false);
+    setConversation([]);
+    toast({
+      title: "Session ended",
+      description: "Chef Savarin is always here when you need cooking help!",
+    });
   };
 
   return (
@@ -94,43 +77,59 @@ export const VirtualChef = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          {!isConnected ? (
+          {!isActive ? (
             <Button 
-              onClick={startConversation}
+              onClick={startVirtualChef}
               size="lg"
               className="bg-gradient-hero hover:shadow-glow transition-all duration-300"
             >
-              <Mic className="w-5 h-5 mr-2" />
-              Start Cooking Session
+              <ChefHat className="w-5 h-5 mr-2" />
+              Activate Chef Savarin
             </Button>
           ) : (
             <div className="flex gap-4 items-center">
               <Button 
-                onClick={endConversation}
-                variant="destructive"
+                onClick={simulateListening}
+                disabled={isListening}
                 size="lg"
+                className="bg-gradient-hero hover:shadow-glow transition-all duration-300"
               >
-                <MicOff className="w-5 h-5 mr-2" />
-                End Session
+                {isListening ? <MicOff className="w-5 h-5 mr-2 animate-pulse" /> : <Mic className="w-5 h-5 mr-2" />}
+                {isListening ? "Listening..." : "Ask Chef"}
               </Button>
               
-              {conversation.isSpeaking && (
-                <div className="flex items-center text-primary animate-pulse">
-                  <Volume2 className="w-5 h-5 mr-2" />
-                  <span className="text-sm font-medium">Chef is speaking...</span>
-                </div>
-              )}
+              <Button 
+                onClick={endSession}
+                variant="outline"
+                size="lg"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                End Session
+              </Button>
             </div>
           )}
         </div>
 
-        {isConnected && (
-          <div className="bg-primary/10 rounded-lg p-4 text-sm text-muted-foreground">
+        {isActive && (
+          <div className="bg-primary/10 rounded-lg p-4 text-sm text-muted-foreground mb-6">
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Connected to Chef Savarin</span>
+              <span>Chef Savarin is active</span>
             </div>
-            <p>Speak naturally - ask about recipes, techniques, or cooking advice!</p>
+            <p>Click "Ask Chef" to get cooking advice and professional tips!</p>
+          </div>
+        )}
+
+        {conversation.length > 0 && (
+          <div className="mt-6 max-w-2xl mx-auto">
+            <h3 className="text-lg font-semibold text-charcoal mb-4">Conversation with Chef Savarin</h3>
+            <div className="space-y-3 text-left">
+              {conversation.map((message, index) => (
+                <div key={index} className="bg-accent/30 rounded-lg p-3 text-sm">
+                  {message}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
