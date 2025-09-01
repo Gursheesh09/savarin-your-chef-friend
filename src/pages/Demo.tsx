@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, ChefHat, Clock, Thermometer } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { VirtualChef } from "@/components/VirtualChef";
 
 interface Recipe {
   name: string;
@@ -136,8 +137,13 @@ export const Demo = () => {
             Savarin AI Demo
           </h1>
           <p className="text-muted-foreground">
-            A working prototype of AI-powered cooking assistance
+            Experience AI-powered cooking with your virtual sous chef
           </p>
+        </div>
+
+        {/* Virtual Chef Section */}
+        <div className="mb-8">
+          <VirtualChef />
         </div>
 
         {!currentRecipe ? (
