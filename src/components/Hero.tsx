@@ -10,6 +10,10 @@ export const Hero = () => {
     navigate('/demo');
   };
 
+  const handleJoinCookingSessions = () => {
+    navigate('/cooking-sessions');
+  };
+
   const handleTalkWithSavarin = () => {
     toast({
       title: "Chat Demo",
@@ -51,7 +55,10 @@ export const Hero = () => {
           <Button variant="hero" size="xl" className="min-w-48" onClick={handleBeginCooking}>
             Begin Cooking
           </Button>
-          <Button variant="warm" size="xl" className="min-w-48" onClick={handleTalkWithSavarin}>
+          <Button variant="warm" size="xl" className="min-w-48" onClick={handleJoinCookingSessions}>
+            Join Live Sessions
+          </Button>
+          <Button variant="outline" size="xl" className="min-w-48" onClick={handleTalkWithSavarin}>
             Talk with Savarin
           </Button>
         </div>
