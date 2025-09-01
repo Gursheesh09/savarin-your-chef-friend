@@ -8,55 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Savarin Design System - Warm Cooking Theme */
-    --background: 34 30% 98%;
-    --foreground: 28 15% 15%;
+    /* Savarin Design System - Modern Culinary Theme */
+    --background: 30 35% 97%;
+    --foreground: 240 15% 20%;
 
-    --card: 34 30% 98%;
-    --card-foreground: 28 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 15% 20%;
 
-    --popover: 34 30% 98%;
-    --popover-foreground: 28 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 15% 20%;
 
-    /* Primary: Warm Apricot */
-    --primary: 25 85% 65%;
-    --primary-foreground: 34 30% 98%;
-    --primary-glow: 25 90% 75%;
+    /* Primary: Rich Saffron */
+    --primary: 35 95% 58%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 35 100% 70%;
 
-    /* Secondary: Soft Cream */
-    --secondary: 34 40% 92%;
-    --secondary-foreground: 28 15% 15%;
+    /* Secondary: Warm Sage */
+    --secondary: 95 25% 85%;
+    --secondary-foreground: 240 15% 20%;
 
-    /* Muted: Light Neutral */
-    --muted: 34 20% 90%;
-    --muted-foreground: 28 10% 45%;
+    /* Muted: Soft Pearl */
+    --muted: 30 20% 92%;
+    --muted-foreground: 240 8% 50%;
 
-    /* Accent: Deep Olive */
-    --accent: 85 20% 25%;
-    --accent-foreground: 34 30% 98%;
+    /* Accent: Deep Terracotta */
+    --accent: 15 75% 45%;
+    --accent-foreground: 0 0% 100%;
 
     /* Charcoal for headings */
-    --charcoal: 28 25% 12%;
-    --charcoal-foreground: 34 30% 98%;
+    --charcoal: 240 20% 15%;
+    --charcoal-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 34 25% 85%;
-    --input: 34 25% 85%;
-    --ring: 25 85% 65%;
+    --border: 30 25% 88%;
+    --input: 30 25% 90%;
+    --ring: 35 95% 58%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(25 85% 65%), hsl(25 90% 75%));
-    --gradient-warm: linear-gradient(180deg, hsl(34 30% 98%), hsl(34 40% 95%));
-    --gradient-subtle: linear-gradient(135deg, hsl(34 40% 92%), hsl(34 30% 95%));
+    /* Enhanced Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(35 95% 58%), hsl(35 100% 70%), hsl(15 75% 45%));
+    --gradient-warm: linear-gradient(180deg, hsl(30 35% 97%), hsl(30 30% 94%));
+    --gradient-subtle: linear-gradient(135deg, hsl(95 25% 85%), hsl(30 20% 92%));
+    --gradient-accent: linear-gradient(45deg, hsl(35 95% 58%), hsl(15 75% 45%));
 
-    /* Shadows */
-    --shadow-warm: 0 10px 30px -10px hsl(25 85% 65% / 0.2);
-    --shadow-elevated: 0 20px 40px -15px hsl(28 25% 12% / 0.1);
-    --shadow-glow: 0 0 40px hsl(25 90% 75% / 0.3);
+    /* Enhanced Shadows */
+    --shadow-warm: 0 12px 35px -8px hsl(35 95% 58% / 0.25);
+    --shadow-elevated: 0 25px 50px -12px hsl(240 20% 15% / 0.15);
+    --shadow-glow: 0 0 50px hsl(35 100% 70% / 0.4);
+    --shadow-soft: 0 4px 20px -2px hsl(240 20% 15% / 0.08);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,41 +74,64 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark Mode - Modern Culinary Theme */
+    --background: 240 15% 8%;
+    --foreground: 30 20% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 12% 10%;
+    --card-foreground: 30 20% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 12% 10%;
+    --popover-foreground: 30 20% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary: Bright Saffron */
+    --primary: 35 90% 65%;
+    --primary-foreground: 240 15% 8%;
+    --primary-glow: 35 95% 75%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary: Dark Sage */
+    --secondary: 95 15% 20%;
+    --secondary-foreground: 30 20% 92%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted: Dark Pearl */
+    --muted: 240 8% 15%;
+    --muted-foreground: 30 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent: Warm Terracotta */
+    --accent: 15 70% 55%;
+    --accent-foreground: 240 15% 8%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Charcoal for headings */
+    --charcoal: 30 20% 92%;
+    --charcoal-foreground: 240 15% 8%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 240 15% 8%;
+
+    --border: 240 8% 18%;
+    --input: 240 8% 15%;
+    --ring: 35 90% 65%;
+
+    /* Enhanced Dark Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(35 90% 65%), hsl(35 95% 75%), hsl(15 70% 55%));
+    --gradient-warm: linear-gradient(180deg, hsl(240 15% 8%), hsl(240 12% 12%));
+    --gradient-subtle: linear-gradient(135deg, hsl(95 15% 20%), hsl(240 8% 15%));
+    --gradient-accent: linear-gradient(45deg, hsl(35 90% 65%), hsl(15 70% 55%));
+
+    /* Enhanced Dark Shadows */
+    --shadow-warm: 0 12px 35px -8px hsl(35 90% 65% / 0.3);
+    --shadow-elevated: 0 25px 50px -12px hsl(240 15% 5% / 0.5);
+    --shadow-glow: 0 0 50px hsl(35 95% 75% / 0.2);
+    --shadow-soft: 0 4px 20px -2px hsl(240 15% 5% / 0.3);
+
+    --sidebar-background: 240 12% 10%;
+    --sidebar-foreground: 30 20% 92%;
+    --sidebar-primary: 35 90% 65%;
+    --sidebar-primary-foreground: 240 15% 8%;
+    --sidebar-accent: 240 8% 15%;
+    --sidebar-accent-foreground: 30 20% 92%;
+    --sidebar-border: 240 8% 18%;
+    --sidebar-ring: 35 90% 65%;
   }
 }
 

@@ -71,12 +71,14 @@ export default {
 			backgroundImage: {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-warm': 'var(--gradient-warm)',
-				'gradient-subtle': 'var(--gradient-subtle)'
+				'gradient-subtle': 'var(--gradient-subtle)',
+				'gradient-accent': 'var(--gradient-accent)'
 			},
 			boxShadow: {
 				'warm': 'var(--shadow-warm)',
 				'elevated': 'var(--shadow-elevated)',
-				'glow': 'var(--shadow-glow)'
+				'glow': 'var(--shadow-glow)',
+				'soft': 'var(--shadow-soft)'
 			},
 			transitionProperty: {
 				'smooth': 'var(--transition-smooth)'
