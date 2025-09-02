@@ -20,12 +20,41 @@ export const VirtualChef = () => {
   const getChefResponse = (userMessage: string): string => {
     const message = userMessage.toLowerCase();
     
+    // Recipe-specific responses
+    if (message.includes('butter chicken') || message.includes('chicken makhani')) {
+      return "Ah, butter chicken! 🍛 Marinate chicken in yogurt, garam masala, and ginger-garlic paste for 30 min. Cook chicken in butter, then simmer in a rich tomato-cream sauce with onions, garlic, ginger, and spices. The secret? A touch of kasuri methi (dried fenugreek) at the end! Serve with basmati rice and naan.";
+    }
+    
+    if (message.includes('carbonara')) {
+      return "Classic carbonara! 🍝 Cook guanciale until crispy, toss hot pasta with egg yolk-parmesan mixture off heat, add pasta water gradually while tossing. No cream needed - just eggs, cheese, pepper, and technique!";
+    }
+    
+    if (message.includes('risotto')) {
+      return "Perfect risotto requires patience! 🍚 Toast arborio rice, add warm stock one ladle at a time, stirring constantly. It takes about 18-20 minutes. Finish with butter and parmesan for that creamy 'all'onda' texture.";
+    }
+    
+    if (message.includes('beef wellington')) {
+      return "Beef Wellington is a showstopper! 🥩 Sear the tenderloin, coat with mushroom duxelles and pâté, wrap in puff pastry. The key is keeping the pastry crisp - rest the beef before wrapping and use egg wash for that golden finish.";
+    }
+    
+    if (message.includes('chocolate cake') || message.includes('brownie')) {
+      return "For rich chocolate desserts! 🍫 Use good quality cocoa powder, don't overmix the batter, and slightly underbake for fudgy texture. Adding coffee enhances the chocolate flavor without making it taste like coffee.";
+    }
+    
+    if (message.includes('steak')) {
+      return "Perfect steak technique! 🥩 Bring to room temp, season generously with salt 40 min before cooking. High heat, flip once, use a thermometer: 125°F rare, 135°F medium-rare. Rest for 5-10 minutes before slicing.";
+    }
+    
+    if (message.includes('curry') && !message.includes('butter')) {
+      return "Great curry starts with the base! 🍛 Bloom your whole spices in oil first, then add aromatics like onion, ginger, garlic. Build layers with ground spices, tomatoes, and coconut milk or broth. Let it simmer to develop deep flavors.";
+    }
+    
     // Cooking technique questions
     if (message.includes('sear') || message.includes('searing')) {
       return "For perfect searing, make sure your protein is completely dry and the pan is hot. Don't move it until it releases naturally - that's when you know it's ready to flip!";
     }
     
-    if (message.includes('pasta') || message.includes('noodle')) {
+    if (message.includes('pasta') && !message.includes('carbonara')) {
       return "Pasta water should be as salty as the sea! Save some starchy pasta water before draining - it's liquid gold for making silky sauces that cling perfectly.";
     }
     
