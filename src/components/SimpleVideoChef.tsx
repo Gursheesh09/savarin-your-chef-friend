@@ -157,7 +157,18 @@ export const SimpleVideoChef: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('API call failed');
+        let errMsg = 'Request failed';
+        try {
+          const err = await response.json();
+          errMsg = (err && (err.error?.message || err.message)) || errMsg;
+        } catch {
+          try { errMsg = (await response.text()).slice(0, 200); } catch {}
+        }
+        toast({ title: 'Conversation error', description: errMsg, variant: 'destructive' });
+        const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
+        setCurrentMessage(fallback);
+        speakMessage(fallback);
+        return;
       }
 
       const data = await response.json();
