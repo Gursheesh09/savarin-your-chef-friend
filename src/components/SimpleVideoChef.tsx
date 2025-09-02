@@ -25,7 +25,7 @@ export const SimpleVideoChef: React.FC = () => {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [elevenLabsKey, setElevenLabsKey] = useState("sk_15d2755552e72979fe4e50ffdbdeb76e02a472ef8ffab983");
   const [openAIKey, setOpenAIKey] = useState("");
-  const [agentId, setAgentId] = useState("");
+  const [agentId, setAgentId] = useState("agent_3601k46bseqxeedaj441fqhqcrhv");
   const [userInput, setUserInput] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
   
