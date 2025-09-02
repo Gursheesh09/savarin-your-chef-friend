@@ -18,7 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
-import { LiveChefVideo } from "@/components/LiveChefVideo";
+import { PremiumAIChef } from "@/components/PremiumAIChef";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -566,16 +566,9 @@ export const CookingSession = () => {
         </Button>
       </div>
 
-        {/* Live Chef Video Call */}
+        {/* Premium AI Chef Interface */}
         <div className="mb-6">
-          <LiveChefVideo 
-            isListening={isListening}
-            isSpeaking={isSpeaking}
-            currentMessage={chefMessage}
-            isThinking={isThinking}
-            currentTranscript={currentTranscript}
-            isConnected={true}
-          />
+          <PremiumAIChef />
         </div>
 
       {/* Camera Feed */}
