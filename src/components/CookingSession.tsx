@@ -18,7 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
-import { VirtualAIAgent } from "@/components/VirtualAIAgent";
+import { LiveChefVideo } from "@/components/LiveChefVideo";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -566,16 +566,15 @@ export const CookingSession = () => {
         </Button>
       </div>
 
-        {/* Virtual AI Agent - Always Visible */}
+        {/* Live Chef Video Call */}
         <div className="mb-6">
-          <VirtualAIAgent 
+          <LiveChefVideo 
             isListening={isListening}
             isSpeaking={isSpeaking}
             currentMessage={chefMessage}
             isThinking={isThinking}
             currentTranscript={currentTranscript}
-            agentName="Chef Savarin"
-            personality="friendly"
+            isConnected={true}
           />
         </div>
 
