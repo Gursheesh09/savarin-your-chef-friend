@@ -183,7 +183,7 @@ export const SimpleVideoChef: React.FC = () => {
     // Try ElevenLabs if key is provided
     if (elevenLabsKey) {
       try {
-        const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/nPczCjzI2devNBz1zQrb', {
+        const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/TRnaQb7q41oL7sV0w6Bu', {
           method: 'POST',
           headers: {
             'Accept': 'audio/mpeg',
