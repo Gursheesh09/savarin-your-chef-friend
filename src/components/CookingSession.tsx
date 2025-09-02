@@ -17,6 +17,7 @@ import {
   Heart,
   Globe
 } from "lucide-react";
+import { CameraFeed } from "@/components/CameraFeed";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -399,6 +400,11 @@ export const CookingSession = () => {
         <Button onClick={endSession} variant="outline" size="sm">
           End Session
         </Button>
+      </div>
+
+      {/* Camera Feed */}
+      <div className="mb-6">
+        <CameraFeed onCapture={() => {}} />
       </div>
 
       {/* Current Step */}
