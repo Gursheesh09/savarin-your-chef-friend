@@ -303,13 +303,16 @@ export const SimpleVideoChef: React.FC = () => {
     }
 
     if (agentId.trim()) {
-      // Live ElevenLabs agent mode
+      // Live ElevenLabs agent mode - requires public agent
       try {
+        console.log('Connecting to agent:', agentId.trim());
         await (conversation as any).startSession({ agentId: agentId.trim() });
         setIsConnected(true);
         setIsListening(false);
+        toast({ title: 'Connected!', description: 'Live conversation with Chef Marco started.' });
       } catch (err) {
-        toast({ title: 'Live agent error', description: 'Failed to connect. Check Agent ID and that it is public.', variant: 'destructive' });
+        console.error('Agent connection failed:', err);
+        toast({ title: 'Agent connection failed', description: 'Make sure the agent is public and try again.', variant: 'destructive' });
       }
     } else {
       // Simple STT -> OpenAI -> TTS mode
@@ -380,10 +383,7 @@ export const SimpleVideoChef: React.FC = () => {
           </div>
           
           {/* Live Video Feed */}
-          <div className="relative w-full h-[500px] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden">
-            
-            {/* Video Call Background with Subtle Animation */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-gray-900/20 animate-pulse"></div>
+          <div className="relative w-full h-[500px] bg-gray-900 flex items-center justify-center overflow-hidden">
             
             {/* Live Chef Video */}
             <div className="relative z-10">
@@ -391,74 +391,30 @@ export const SimpleVideoChef: React.FC = () => {
                 isSpeaking ? 'scale-105' : isListening ? 'scale-102' : 'scale-100'
               }`}>
                 
-                {/* Main Chef Image with Live Effects */}
+                {/* Main Chef Image */}
                 <div className="relative w-80 h-80 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl">
                   
-                  {/* Live Video Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-gray-100 animate-pulse"></div>
-                  
-                  {/* Chef Portrait with Advanced Animations */}
+                  {/* Chef Portrait */}
                   <img 
                     src={chefPortrait} 
                     alt="Chef Marco - Live"
-                    className={`relative w-full h-full object-cover transition-all duration-300 ${
-                      isSpeaking ? 'scale-110 brightness-115' : 
-                      isListening ? 'scale-105 brightness-108' : 
-                      'scale-100 brightness-100 animate-pulse'
-                    }`}
-                    style={{
-                      transform: `
-                        translateY(${isSpeaking ? '-4px' : isListening ? '-2px' : '0px'}) 
-                        translateX(${isSpeaking ? Math.sin(Date.now() / 500) * 1 : 0}px)
-                        rotate(${isSpeaking ? Math.sin(Date.now() / 800) * 0.5 : 0}deg)
-                      `,
-                      filter: `
-                        hue-rotate(${isSpeaking ? '15deg' : '0deg'}) 
-                        saturate(${isSpeaking ? '1.2' : isListening ? '1.1' : '1'})
-                        contrast(${isSpeaking ? '1.1' : '1'})
-                      `
-                    }}
+                    className="w-full h-full object-cover"
                   />
                   
-                  {/* Breathing Animation Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5 animate-pulse opacity-50"></div>
-                  
-                  {/* Live Video Scan Lines */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent animate-pulse opacity-20"></div>
-                  
-                  {/* Dynamic Facial Expressions */}
-                  {isSpeaking && (
-                    <div className="absolute inset-0 bg-gradient-radial from-blue-400/20 via-transparent to-transparent animate-pulse"></div>
-                  )}
-                  
-                  {isListening && (
-                    <div className="absolute inset-0 bg-gradient-radial from-green-400/20 via-transparent to-transparent animate-ping"></div>
-                  )}
-                  
-                  {/* Video Call Connection Effects */}
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse delay-75"></div>
-                  </div>
-                  
                   {/* Live Status Badge */}
-                  <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold animate-pulse">
+                  <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
                     LIVE
                   </div>
                   
                   {/* Speaking/Listening Indicators */}
                   {isSpeaking && (
-                    <>
-                      <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-2">
-                        <div className="flex items-center justify-center gap-1">
-                          <div className="w-2 h-4 bg-blue-400 rounded animate-bounce"></div>
-                          <div className="w-2 h-3 bg-blue-400 rounded animate-bounce delay-75"></div>
-                          <div className="w-2 h-5 bg-blue-400 rounded animate-bounce delay-150"></div>
-                          <div className="w-2 h-2 bg-blue-400 rounded animate-bounce delay-200"></div>
-                          <div className="w-2 h-4 bg-blue-400 rounded animate-bounce delay-300"></div>
-                        </div>
+                    <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-2">
+                      <div className="flex items-center justify-center gap-1">
+                        <div className="w-2 h-4 bg-blue-400 rounded animate-bounce"></div>
+                        <div className="w-2 h-3 bg-blue-400 rounded animate-bounce delay-75"></div>
+                        <div className="w-2 h-5 bg-blue-400 rounded animate-bounce delay-150"></div>
                       </div>
-                    </>
+                    </div>
                   )}
                   
                   {isListening && (
@@ -470,30 +426,8 @@ export const SimpleVideoChef: React.FC = () => {
                     </div>
                   )}
                 </div>
-                
-                {/* Video Call Frame Effects */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 rounded-2xl blur-sm animate-pulse"></div>
-                
-                {/* Connection Quality Bars */}
-                <div className="absolute -top-8 right-0 flex gap-1">
-                  <div className="w-1 h-3 bg-green-400 rounded animate-pulse"></div>
-                  <div className="w-1 h-4 bg-green-400 rounded animate-pulse delay-75"></div>
-                  <div className="w-1 h-5 bg-green-400 rounded animate-pulse delay-150"></div>
-                  <div className="w-1 h-6 bg-green-400 rounded animate-pulse delay-200"></div>
-                </div>
               </div>
             </div>
-            
-            {/* Professional Kitchen Background with Motion */}
-            <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-10 left-10 w-24 h-20 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg animate-pulse"></div>
-              <div className="absolute top-16 right-12 w-20 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg animate-pulse delay-300"></div>
-              <div className="absolute bottom-20 left-16 w-18 h-14 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg animate-pulse delay-500"></div>
-              <div className="absolute bottom-24 right-20 w-16 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg animate-pulse delay-700"></div>
-            </div>
-            
-            {/* Ambient Video Call Lighting */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-blue-900/10 animate-pulse opacity-60"></div>
           </div>
           
           {/* Live Captions */}
