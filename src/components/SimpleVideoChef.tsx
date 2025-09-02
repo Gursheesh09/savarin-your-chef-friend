@@ -22,6 +22,8 @@ export const SimpleVideoChef: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [elevenLabsKey, setElevenLabsKey] = useState("");
+  const [showKeyInput, setShowKeyInput] = useState(false);
   
   const recognitionRef = useRef<any>(null);
   const { toast } = useToast();
@@ -130,61 +132,84 @@ export const SimpleVideoChef: React.FC = () => {
     
     setIsSpeaking(true);
     
-    try {
-      // Try ElevenLabs API directly
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/TX3LPaxmHKxFdv7VOQHJ', {
-        method: 'POST',
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': 'sk_d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955'
-        },
-        body: JSON.stringify({
-          text: message,
-          model_id: 'eleven_turbo_v2_5',
-          voice_settings: {
-            stability: 0.6,
-            similarity_boost: 0.85,
-            style: 0.1,
-            use_speaker_boost: true
-          }
-        })
-      });
+    // Try ElevenLabs if key is provided
+    if (elevenLabsKey) {
+      try {
+        const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/TX3LPaxmHKxFdv7VOQHJ', {
+          method: 'POST',
+          headers: {
+            'Accept': 'audio/mpeg',
+            'Content-Type': 'application/json',
+            'xi-api-key': elevenLabsKey
+          },
+          body: JSON.stringify({
+            text: message,
+            model_id: 'eleven_turbo_v2_5',
+            voice_settings: {
+              stability: 0.6,
+              similarity_boost: 0.85,
+              style: 0.1,
+              use_speaker_boost: true
+            }
+          })
+        });
 
-      if (response.ok) {
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audioElement = new Audio(audioUrl);
-        
-        audioElement.onended = () => {
-          setIsSpeaking(false);
-          URL.revokeObjectURL(audioUrl);
-          if (isConnected) {
-            setTimeout(() => startListening(), 500);
-          }
-        };
-        
-        await audioElement.play();
-        return;
+        if (response.ok) {
+          const audioBlob = await response.blob();
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audioElement = new Audio(audioUrl);
+          
+          audioElement.onended = () => {
+            setIsSpeaking(false);
+            URL.revokeObjectURL(audioUrl);
+            if (isConnected) {
+              setTimeout(() => startListening(), 500);
+            }
+          };
+          
+          await audioElement.play();
+          return;
+        } else {
+          console.log('ElevenLabs API error:', await response.text());
+        }
+      } catch (error) {
+        console.log('ElevenLabs error:', error);
       }
-    } catch (error) {
-      console.log('ElevenLabs not available, using browser TTS');
     }
     
-    // Fallback to enhanced browser speech synthesis
+    // Enhanced browser speech synthesis fallback
     if ('speechSynthesis' in window) {
-      // Get available voices
-      const voices = speechSynthesis.getVoices();
+      speechSynthesis.cancel(); // Clear any existing speech
+      
+      // Wait for voices to load
+      const getVoices = () => {
+        return new Promise<SpeechSynthesisVoice[]>((resolve) => {
+          let voices = speechSynthesis.getVoices();
+          if (voices.length > 0) {
+            resolve(voices);
+          } else {
+            speechSynthesis.onvoiceschanged = () => {
+              voices = speechSynthesis.getVoices();
+              resolve(voices);
+            };
+          }
+        });
+      };
+      
+      const voices = await getVoices();
+      
+      // Select the best available voice
       const preferredVoice = voices.find(voice => 
-        voice.name.includes('Google') || 
-        voice.name.includes('Microsoft') ||
-        voice.lang === 'en-US'
-      ) || voices[0];
+        voice.name.includes('Microsoft David') ||
+        voice.name.includes('Google US English') ||
+        voice.name.includes('Alex') ||
+        (voice.lang.startsWith('en') && voice.name.includes('Male'))
+      ) || voices.find(voice => voice.lang.startsWith('en')) || voices[0];
       
       const utterance = new SpeechSynthesisUtterance(message);
-      utterance.voice = preferredVoice;
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
+      if (preferredVoice) utterance.voice = preferredVoice;
+      utterance.rate = 0.85;
+      utterance.pitch = 0.9;
       utterance.volume = 0.9;
       
       utterance.onstart = () => setIsSpeaking(true);
@@ -274,18 +299,26 @@ export const SimpleVideoChef: React.FC = () => {
                   {/* Live Video Background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-gray-100 animate-pulse"></div>
                   
-                  {/* Chef Portrait with Animations */}
+                  {/* Chef Portrait with Advanced Animations */}
                   <img 
                     src={chefPortrait} 
                     alt="Chef Marco - Live"
-                    className={`relative w-full h-full object-cover transition-all duration-200 ${
-                      isSpeaking ? 'scale-105 brightness-110' : 
-                      isListening ? 'scale-102 brightness-105' : 
-                      'scale-100 brightness-100'
+                    className={`relative w-full h-full object-cover transition-all duration-300 ${
+                      isSpeaking ? 'scale-110 brightness-115' : 
+                      isListening ? 'scale-105 brightness-108' : 
+                      'scale-100 brightness-100 animate-pulse'
                     }`}
                     style={{
-                      transform: `translateY(${isSpeaking ? '-2px' : isListening ? '-1px' : '0px'})`,
-                      filter: `hue-rotate(${isSpeaking ? '10deg' : '0deg'}) saturate(${isSpeaking ? '1.1' : '1'})`
+                      transform: `
+                        translateY(${isSpeaking ? '-4px' : isListening ? '-2px' : '0px'}) 
+                        translateX(${isSpeaking ? Math.sin(Date.now() / 500) * 1 : 0}px)
+                        rotate(${isSpeaking ? Math.sin(Date.now() / 800) * 0.5 : 0}deg)
+                      `,
+                      filter: `
+                        hue-rotate(${isSpeaking ? '15deg' : '0deg'}) 
+                        saturate(${isSpeaking ? '1.2' : isListening ? '1.1' : '1'})
+                        contrast(${isSpeaking ? '1.1' : '1'})
+                      `
                     }}
                   />
                   
@@ -386,16 +419,43 @@ export const SimpleVideoChef: React.FC = () => {
           )}
         </Card>
 
+        {/* API Key Input */}
+        {showKeyInput && (
+          <Card className="mb-4 p-4 bg-gray-900 border-gray-700">
+            <div className="flex items-center gap-2">
+              <input
+                type="password"
+                placeholder="Enter your ElevenLabs API key for natural voice"
+                value={elevenLabsKey}
+                onChange={(e) => setElevenLabsKey(e.target.value)}
+                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
+              />
+              <Button onClick={() => setShowKeyInput(false)} className="bg-green-600">
+                Save
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Simple Controls */}
         <div className="flex items-center justify-center gap-6 mt-6">
           {!isConnected ? (
-            <Button
-              onClick={startCall}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg"
-            >
-              <Phone className="w-6 h-6 mr-2" />
-              Call Chef Marco
-            </Button>
+            <div className="flex flex-col items-center gap-4">
+              <Button
+                onClick={startCall}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg"
+              >
+                <Phone className="w-6 h-6 mr-2" />
+                Call Chef Marco
+              </Button>
+              
+              <Button
+                onClick={() => setShowKeyInput(!showKeyInput)}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm"
+              >
+                {elevenLabsKey ? '✓ ElevenLabs Connected' : 'Add ElevenLabs API Key'}
+              </Button>
+            </div>
           ) : (
             <>
               <Button
