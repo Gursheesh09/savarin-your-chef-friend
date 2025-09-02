@@ -63,6 +63,7 @@ export const SimpleVideoChef: React.FC = () => {
       if (ok) setOpenAIKey(ok);
       const ag = localStorage.getItem('elevenAgentId');
       if (ag) setAgentId(ag);
+      if (!ok) setShowKeyInput(true);
     } catch {}
   }, []);
 
@@ -557,10 +558,10 @@ export const SimpleVideoChef: React.FC = () => {
                   onClick={() => setShowKeyInput(!showKeyInput)}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm"
                 >
-                  {elevenLabsKey ? '✓ ElevenLabs Connected' : 'Add ElevenLabs API Key'}
+                  {openAIKey && elevenLabsKey ? '✓ Keys saved' : 'Add Keys'}
                 </Button>
                 <Button
-                  onClick={async () => { await unlockAudio(); await speakMessage("Audio test. You should hear Brian now."); }}
+                  onClick={async () => { await unlockAudio(); await speakMessage("Audio test. You should hear the chef now."); }}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
                 >
                   Test audio
