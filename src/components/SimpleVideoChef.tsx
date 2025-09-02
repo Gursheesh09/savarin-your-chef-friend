@@ -11,6 +11,7 @@ import {
   PhoneOff
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useConversation } from "@11labs/react";
 import chefPortrait from "@/assets/chef-portrait.jpg";
 
 const API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
@@ -24,11 +25,25 @@ export const SimpleVideoChef: React.FC = () => {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [elevenLabsKey, setElevenLabsKey] = useState("sk_15d2755552e72979fe4e50ffdbdeb76e02a472ef8ffab983");
   const [openAIKey, setOpenAIKey] = useState("");
+  const [agentId, setAgentId] = useState("");
   const [userInput, setUserInput] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
   
   const recognitionRef = useRef<any>(null);
   const { toast } = useToast();
+
+  // ElevenLabs Live Conversation (optional)
+  const conversation = useConversation({
+    onConnect: () => setIsConnected(true),
+    onDisconnect: () => setIsConnected(false),
+    onMessage: (msg: any) => {
+      const text = (msg && (msg.text || msg.message)) as string | undefined;
+      if (text) setCurrentMessage(text);
+    },
+    onError: () => {
+      toast({ title: 'Live agent error', description: 'Check Agent ID or make it public.', variant: 'destructive' });
+    }
+  });
 
   // Clean up on unmount
   useEffect(() => {
@@ -46,6 +61,8 @@ export const SimpleVideoChef: React.FC = () => {
       if (el) setElevenLabsKey(el);
       const ok = localStorage.getItem('openAIKey');
       if (ok) setOpenAIKey(ok);
+      const ag = localStorage.getItem('elevenAgentId');
+      if (ag) setAgentId(ag);
     } catch {}
   }, []);
 
@@ -266,18 +283,30 @@ export const SimpleVideoChef: React.FC = () => {
   };
 
   const startCall = async () => {
-    setIsConnected(true);
     try {
       await unlockAudio();
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
       console.warn('Audio permission/unlock failed', e);
     }
-    // Start listening immediately (no intro)
-    startListening();
+
+    if (agentId.trim()) {
+      // Live ElevenLabs agent mode
+      try {
+        await (conversation as any).startSession({ agentId: agentId.trim() });
+        setIsConnected(true);
+        setIsListening(false);
+      } catch (err) {
+        toast({ title: 'Live agent error', description: 'Failed to connect. Check Agent ID and that it is public.', variant: 'destructive' });
+      }
+    } else {
+      // Simple STT -> OpenAI -> TTS mode
+      setIsConnected(true);
+      startListening();
+    }
   };
 
-  const endCall = () => {
+  const endCall = async () => {
     setIsConnected(false);
     setIsListening(false);
     setIsSpeaking(false);
@@ -290,6 +319,7 @@ export const SimpleVideoChef: React.FC = () => {
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel();
     }
+    try { await (conversation as any).endSession?.(); } catch {}
   };
 
   return (
@@ -473,7 +503,7 @@ export const SimpleVideoChef: React.FC = () => {
         {/* API Key Input */}
         {showKeyInput && (
           <Card className="mb-4 p-4 bg-gray-900 border-gray-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <input
                 type="password"
                 placeholder="ElevenLabs API key (for natural voice)"
@@ -488,10 +518,17 @@ export const SimpleVideoChef: React.FC = () => {
                 onChange={(e) => setOpenAIKey(e.target.value)}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
               />
+              <input
+                type="text"
+                placeholder="ElevenLabs Agent ID (for live voice conversation)"
+                value={agentId}
+                onChange={(e) => setAgentId(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
+              />
             </div>
             <div className="mt-3 flex items-center justify-between">
               <span className="text-xs text-gray-400">Keys are stored locally in your browser.</span>
-              <Button onClick={() => { try { localStorage.setItem('elevenLabsKey', elevenLabsKey); localStorage.setItem('openAIKey', openAIKey); toast({ title: 'Saved', description: 'API keys saved to this browser.' }); } catch {} setShowKeyInput(false); }} className="bg-green-600">
+              <Button onClick={() => { try { localStorage.setItem('elevenLabsKey', elevenLabsKey); localStorage.setItem('openAIKey', openAIKey); localStorage.setItem('elevenAgentId', agentId); toast({ title: 'Saved', description: 'API keys saved to this browser.' }); } catch {} setShowKeyInput(false); }} className="bg-green-600">
                 Save
               </Button>
             </div>
