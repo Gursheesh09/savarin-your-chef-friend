@@ -62,7 +62,10 @@ export const SimpleVideoChef: React.FC = () => {
       const ok = localStorage.getItem('openAIKey');
       if (ok) setOpenAIKey(ok);
       const ag = localStorage.getItem('elevenAgentId');
-      if (ag) setAgentId(ag);
+      if (ag) {
+        const extracted = ag.match(/agent_[a-z0-9]+/i)?.[0] || '';
+        if (extracted) setAgentId(extracted);
+      }
       if (!ok) setShowKeyInput(true);
     } catch {}
   }, []);
@@ -303,16 +306,15 @@ export const SimpleVideoChef: React.FC = () => {
     }
 
     if (agentId.trim()) {
-      // Live ElevenLabs agent mode - requires public agent
+      // Live ElevenLabs agent mode 
       try {
-        console.log('Connecting to agent:', agentId.trim());
-        await (conversation as any).startSession({ agentId: agentId.trim() });
-        setIsConnected(true);
-        setIsListening(false);
-        toast({ title: 'Connected!', description: 'Live conversation with Chef Marco started.' });
+        console.log('Starting agent session with ID:', agentId.trim());
+        const result = await (conversation as any).startSession({ agentId: agentId.trim() });
+        console.log('Agent session started:', result);
+        // Don't set connected here - wait for onConnect callback
       } catch (err) {
-        console.error('Agent connection failed:', err);
-        toast({ title: 'Agent connection failed', description: 'Make sure the agent is public and try again.', variant: 'destructive' });
+        console.error('Agent start failed:', err);
+        toast({ title: 'Agent failed', description: 'Check if agent is public or try clearing Agent ID field.', variant: 'destructive' });
       }
     } else {
       // Simple STT -> OpenAI -> TTS mode
@@ -473,7 +475,11 @@ export const SimpleVideoChef: React.FC = () => {
                 type="text"
                 placeholder="ElevenLabs Agent ID (for live voice conversation)"
                 value={agentId}
-                onChange={(e) => setAgentId(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  const extracted = v.match(/agent_[a-z0-9]+/i)?.[0] || v.trim();
+                  setAgentId(extracted);
+                }}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
               />
             </div>
