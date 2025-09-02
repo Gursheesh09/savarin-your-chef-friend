@@ -259,9 +259,9 @@ export const Demo = () => {
           </p>
         </div>
 
-        {/* Conversational Chef Section */}
+        {/* Virtual Chef Section */}
         <div className="mb-8">
-          <ConversationalChef />
+          <VirtualChef />
         </div>
 
         {!currentRecipe ? (

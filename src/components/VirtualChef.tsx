@@ -1,182 +1,240 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, MicOff, ChefHat, Volume2, MessageCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Mic, MicOff, ChefHat, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const ELEVENLABS_API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
-const VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"; // George - warm, professional voice
-const MODEL_ID = "eleven_turbo_v2_5";
+interface Message {
+  role: 'user' | 'chef';
+  content: string;
+  timestamp: Date;
+}
 
 export const VirtualChef = () => {
   const { toast } = useToast();
-  const [isActive, setIsActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [conversation, setConversation] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputText, setInputText] = useState("");
 
-  const chefResponses = [
-    "Perfect! Let's start with your mise en place - that's getting all ingredients prepped and ready.",
-    "Great question! For pasta, your water should be as salty as the sea - taste it to check.",
-    "When sautéing garlic, listen for the gentle sizzle. If it's browning too fast, lower the heat.",
-    "The secret to perfect scrambled eggs? Low heat and patience. Take them off just before they look done.",
-    "For the best sear on meat, pat it completely dry first and don't move it until it releases naturally.",
-    "When making a sauce, always taste and adjust. Your palate is your best cooking tool.",
-    "Temperature is crucial - use a thermometer for proteins. Chicken should reach 165°F internal temp.",
-    "Fresh herbs go in at the end, dried herbs go in early. This preserves their distinct flavors."
-  ];
-
-  const startVirtualChef = () => {
-    setIsActive(true);
-    setConversation([]);
-    toast({
-      title: "Chef Savarin activated!",
-      description: "Your virtual sous chef is ready to help with cooking guidance.",
-    });
+  const getChefResponse = (userMessage: string): string => {
+    const message = userMessage.toLowerCase();
+    
+    // Cooking technique questions
+    if (message.includes('sear') || message.includes('searing')) {
+      return "For perfect searing, make sure your protein is completely dry and the pan is hot. Don't move it until it releases naturally - that's when you know it's ready to flip!";
+    }
+    
+    if (message.includes('pasta') || message.includes('noodle')) {
+      return "Pasta water should be as salty as the sea! Save some starchy pasta water before draining - it's liquid gold for making silky sauces that cling perfectly.";
+    }
+    
+    if (message.includes('garlic')) {
+      return "Ah, garlic! Slice it thin, keep the heat medium, and listen for that gentle sizzle. If it starts browning too fast, lower the heat immediately. Burnt garlic is bitter garlic!";
+    }
+    
+    if (message.includes('sauce')) {
+      return "The secret to great sauces is patience and tasting. Build flavors layer by layer, and always taste and adjust. Your palate is your best tool in the kitchen!";
+    }
+    
+    if (message.includes('egg')) {
+      return "Low and slow for scrambled eggs - take them off the heat just before they look done. They'll finish cooking with residual heat and stay creamy.";
+    }
+    
+    if (message.includes('season') || message.includes('salt')) {
+      return "Season throughout the cooking process, not just at the end. Each layer of seasoning builds depth of flavor. And remember - you can always add more, but you can't take it away!";
+    }
+    
+    if (message.includes('knife') || message.includes('cutting') || message.includes('chop')) {
+      return "A sharp knife is a safe knife! Keep your fingertips curled under like a claw, and let the knife rock through the cuts. Consistent cuts mean even cooking.";
+    }
+    
+    if (message.includes('temperature') || message.includes('heat')) {
+      return "Use a thermometer for proteins - chicken should reach 165°F internal temp. For stovetops, medium heat is your friend for most cooking. High heat is for searing only!";
+    }
+    
+    if (message.includes('onion')) {
+      return "Crying from onions? Chill them first, or breathe through your mouth while cutting. For caramelized onions, be patient - true caramelization takes 20-30 minutes of slow cooking.";
+    }
+    
+    if (message.includes('bread') || message.includes('baking')) {
+      return "Baking is science! Measure by weight when possible, and don't open the oven door too early - you'll let out the heat and deflate your bread.";
+    }
+    
+    if (message.includes('help') || message.includes('what') || message.includes('how')) {
+      return "I'm here to help with any cooking questions! Ask me about techniques, ingredients, timing, or troubleshooting. What are you cooking today?";
+    }
+    
+    if (message.includes('thank')) {
+      return "You're very welcome! Cooking is about practice and passion. Keep experimenting, keep tasting, and most importantly - have fun in the kitchen!";
+    }
+    
+    // Default responses based on cooking context
+    const responses = [
+      "That's a great question! In my experience, the key is to trust your senses - sight, smell, and taste will guide you better than any timer.",
+      "Ah, let me share a chef's secret with you! The best dishes come from understanding your ingredients and treating them with respect.",
+      "I love your curiosity! Cooking is all about building confidence through practice. What specific technique would you like to master?",
+      "Excellence in cooking comes from attention to detail and tasting as you go. Tell me more about what you're working on!",
+      "That reminds me of when I was learning in the kitchen - every mistake is a lesson. What cooking challenge can I help you with today?"
+    ];
+    
+    return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  const speakChefResponse = async () => {
-    setIsListening(true);
-    toast({
-      title: "Chef Savarin is thinking...",
-      description: "Preparing a helpful cooking tip for you!",
-    });
+  const handleSendMessage = () => {
+    if (!inputText.trim()) return;
 
-    try {
-      const response = chefResponses[Math.floor(Math.random() * chefResponses.length)];
+    const userMessage: Message = {
+      role: 'user',
+      content: inputText,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    
+    // Get chef response
+    const chefResponse = getChefResponse(inputText);
+    
+    const chefMessage: Message = {
+      role: 'chef',
+      content: chefResponse,
+      timestamp: new Date()
+    };
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, chefMessage]);
       
-      // Call ElevenLabs TTS API
-      const ttsResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text: response,
-          model_id: MODEL_ID,
-          voice_settings: {
-            stability: 0.75,
-            similarity_boost: 0.75,
-          }
-        }),
-      });
-
-      if (ttsResponse.ok) {
-        const audioBlob = await ttsResponse.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        
-        // Play the audio
-        await audio.play();
-        
-        // Clean up URL when audio ends
-        audio.onended = () => {
-          URL.revokeObjectURL(audioUrl);
-        };
+      // Speak the response
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(chefResponse);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 0.8;
+        window.speechSynthesis.speak(utterance);
       }
-
-      setConversation(prev => [...prev, `Chef Savarin: ${response}`]);
-      setIsListening(false);
       
       toast({
-        title: "Chef Savarin says:",
-        description: response,
+        title: "Chef Savarin",
+        description: chefResponse.slice(0, 80) + "...",
       });
+    }, 800);
+
+    setInputText("");
+  };
+
+  const handleVoiceToggle = () => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
       
-    } catch (error) {
-      console.error('TTS Error:', error);
-      setIsListening(false);
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputText(transcript);
+        setTimeout(() => handleSendMessage(), 100);
+      };
+      
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => {
+        setIsListening(false);
+        toast({
+          title: "Voice not available",
+          description: "Try typing your question instead!",
+        });
+      };
+      
+      setIsListening(true);
+      recognition.start();
+      
       toast({
-        title: "Connection issue",
-        description: "Chef Savarin had trouble speaking. Please try again!",
-        variant: "destructive",
+        title: "Listening...",
+        description: "Ask Chef Savarin your cooking question!",
+      });
+    } else {
+      toast({
+        title: "Voice not supported",
+        description: "Try typing your question instead!",
       });
     }
   };
 
-  const endSession = () => {
-    setIsActive(false);
-    setIsListening(false);
-    setConversation([]);
-    toast({
-      title: "Session ended",
-      description: "Chef Savarin is always here when you need cooking help!",
-    });
-  };
-
   return (
-    <Card className="p-8 bg-gradient-subtle border-primary/20">
-      <div className="text-center">
-        <div className="w-24 h-24 bg-gradient-hero rounded-full mx-auto mb-6 flex items-center justify-center shadow-warm">
-          <ChefHat className="w-12 h-12 text-primary-foreground" />
+    <Card className="p-6 bg-gradient-subtle border-primary/20">
+      <div className="text-center mb-6">
+        <div className="w-20 h-20 bg-gradient-hero rounded-full mx-auto mb-4 flex items-center justify-center shadow-warm">
+          <ChefHat className="w-10 h-10 text-primary-foreground" />
         </div>
-        
-        <h2 className="text-3xl font-bold text-charcoal mb-4">
-          Meet Chef Savarin
-        </h2>
-        
-        <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Your virtual sous chef is ready to assist you with recipes, cooking techniques, 
-          and kitchen guidance. Just click to start talking!
-        </p>
+        <h2 className="text-2xl font-bold text-charcoal mb-2">Chef Savarin</h2>
+        <p className="text-muted-foreground text-sm">Ask me anything about cooking!</p>
+      </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          {!isActive ? (
-            <Button 
-              onClick={startVirtualChef}
-              size="lg"
-              className="bg-gradient-hero hover:shadow-glow transition-all duration-300"
+      {/* Chat Messages */}
+      {messages.length > 0 && (
+        <div className="mb-4 max-h-64 overflow-y-auto space-y-3">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <ChefHat className="w-5 h-5 mr-2" />
-              Activate Chef Savarin
-            </Button>
-          ) : (
-            <div className="flex gap-4 items-center">
-              <Button 
-                onClick={speakChefResponse}
-                disabled={isListening}
-                size="lg"
-                className="bg-gradient-hero hover:shadow-glow transition-all duration-300"
+              <div
+                className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                  message.role === 'user'
+                    ? 'bg-primary text-primary-foreground ml-4'
+                    : 'bg-accent/50 text-foreground mr-4'
+                }`}
               >
-                {isListening ? <MicOff className="w-5 h-5 mr-2 animate-pulse" /> : <Mic className="w-5 h-5 mr-2" />}
-                {isListening ? "Listening..." : "Ask Chef"}
-              </Button>
-              
-              <Button 
-                onClick={endSession}
-                variant="outline"
-                size="lg"
-              >
-                <MessageCircle className="w-5 h-5 mr-2" />
-                End Session
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {isActive && (
-          <div className="bg-primary/10 rounded-lg p-4 text-sm text-muted-foreground mb-6">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Chef Savarin is active</span>
-            </div>
-            <p>Click "Ask Chef" to get cooking advice and professional tips!</p>
-          </div>
-        )}
-
-        {conversation.length > 0 && (
-          <div className="mt-6 max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold text-charcoal mb-4">Conversation with Chef Savarin</h3>
-            <div className="space-y-3 text-left">
-              {conversation.map((message, index) => (
-                <div key={index} className="bg-accent/30 rounded-lg p-3 text-sm">
-                  {message}
+                <div className="flex items-start gap-2">
+                  {message.role === 'chef' && (
+                    <ChefHat className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  )}
+                  <div>
+                    <p>{message.content}</p>
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
+          ))}
+        </div>
+      )}
+
+      {messages.length === 0 && (
+        <div className="mb-4 p-4 bg-accent/30 rounded-lg text-center">
+          <p className="text-sm text-muted-foreground mb-2">
+            👋 Hi! I'm Chef Savarin, your cooking companion.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Ask me about cooking techniques, ingredients, or any kitchen questions!
+          </p>
+        </div>
+      )}
+
+      {/* Input Area */}
+      <div className="flex gap-2 mb-4">
+        <Input
+          placeholder="Ask about cooking techniques, recipes, or ingredients..."
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          className="flex-1"
+        />
+        <Button onClick={handleSendMessage} disabled={!inputText.trim()} size="sm">
+          <Send className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {/* Voice Button */}
+      <div className="flex justify-center">
+        <Button
+          onClick={handleVoiceToggle}
+          disabled={isListening}
+          variant={isListening ? "destructive" : "outline"}
+          className="flex items-center gap-2"
+        >
+          {isListening ? <MicOff className="w-4 h-4 animate-pulse" /> : <Mic className="w-4 h-4" />}
+          {isListening ? "Listening..." : "Ask with Voice"}
+        </Button>
       </div>
     </Card>
   );
