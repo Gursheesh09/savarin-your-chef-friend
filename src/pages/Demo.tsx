@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, ChefHat, Clock, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { VirtualChef } from "@/components/VirtualChef";
+import { CookingSession } from "@/components/CookingSession";
 import { ConversationalChef } from "@/components/ConversationalChef";
 import { useNavigate } from "react-router-dom";
 
@@ -259,9 +259,9 @@ export const Demo = () => {
           </p>
         </div>
 
-        {/* Virtual Chef Section */}
+        {/* Cooking Session Section */}
         <div className="mb-8">
-          <VirtualChef />
+          <CookingSession />
         </div>
 
         {!currentRecipe ? (
