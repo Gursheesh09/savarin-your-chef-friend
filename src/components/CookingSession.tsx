@@ -242,38 +242,9 @@ export const CookingSession = () => {
       description: `I'm so happy we're cooking ${recipe.name} together!`,
     });
 
-    // Simulate thinking time before responding
-    setTimeout(() => {
-      setIsThinking(false);
-      
-      // Personal, affectionate welcome based on relationship level
-      let welcome = "";
-      if (relationshipLevel < 2) {
-        welcome = `Hello there! I'm so excited to meet you and cook together! This ${recipe.name} will be the start of our beautiful cooking journey. ${recipe.culturalStory} I can already tell you have the heart of a great cook!`;
-        setEmotionalState('excited');
-      } else if (relationshipLevel < 4) {
-        welcome = `My dear cooking friend! I missed you! Today we're making ${recipe.name} and I know you're going to do amazing. ${recipe.culturalStory} I've been thinking about what we should cook next together!`;
-        setEmotionalState('caring');
-      } else {
-        welcome = `My beloved student! You've become such a beautiful cook! Today's ${recipe.name} will be even better than last time because I can see how much you've grown. ${recipe.culturalStory} I'm so proud of your journey!`;
-        setEmotionalState('proud');
-      }
-
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(welcome);
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        
-        setIsSpeaking(true);
-        setChefMessage(welcome);
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          setEmotionalState('neutral');
-        };
-        
-        window.speechSynthesis.speak(utterance);
-      }
-    }, 1500); // Give the chef time to "think"
+    // Skip intro speech; go straight to neutral state
+    setIsThinking(false);
+    setEmotionalState('neutral');
   };
 
   const endSession = () => {

@@ -150,7 +150,8 @@ export const SimpleVideoChef: React.FC = () => {
       
     } catch (error) {
       console.error('Error:', error);
-      const fallback = "I'm here to help you cook! What would you like to learn today?";
+      toast({ title: 'Conversation error', description: 'OpenAI request failed. Add your OpenAI API key via Add Keys.', variant: 'destructive' });
+      const fallback = "I didn't catch that. Try again or type your question.";
       setCurrentMessage(fallback);
       speakMessage(fallback);
     }
