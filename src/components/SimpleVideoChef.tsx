@@ -170,9 +170,11 @@ export const SimpleVideoChef: React.FC = () => {
           await audioElement.play();
           return;
         } else {
-          console.log('ElevenLabs API error:', await response.text());
+          const errText = await response.text();
+          toast({ title: 'Voice error', description: `ElevenLabs: ${errText}` , variant: 'destructive'});
         }
       } catch (error) {
+        toast({ title: 'Voice error', description: 'Could not reach ElevenLabs.', variant: 'destructive'});
         console.log('ElevenLabs error:', error);
       }
     }
@@ -210,7 +212,7 @@ export const SimpleVideoChef: React.FC = () => {
       if (preferredVoice) utterance.voice = preferredVoice;
       utterance.rate = 0.85;
       utterance.pitch = 0.9;
-      utterance.volume = 0.9;
+      utterance.volume = 1.0;
       
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => {
@@ -221,6 +223,7 @@ export const SimpleVideoChef: React.FC = () => {
       };
       
       speechSynthesis.speak(utterance);
+      toast({ title: 'Using fallback voice', description: 'Add your ElevenLabs key for a more natural voice.' });
     }
   };
 
@@ -276,6 +279,11 @@ export const SimpleVideoChef: React.FC = () => {
                     <Volume2 className="w-3 h-3 mr-1" />
                     Speaking
                   </Badge>
+                )}
+                {elevenLabsKey ? (
+                  <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">Natural voice</Badge>
+                ) : (
+                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">Fallback voice</Badge>
                 )}
               </div>
             </div>
