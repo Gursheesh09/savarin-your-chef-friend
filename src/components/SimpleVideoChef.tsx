@@ -11,6 +11,7 @@ import {
   PhoneOff
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import chefPortrait from "@/assets/chef-portrait.jpg";
 
 const API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
 
@@ -123,21 +124,72 @@ export const SimpleVideoChef: React.FC = () => {
     }
   };
 
-  // Text-to-speech
-  const speakMessage = (message: string) => {
+  // Enhanced text-to-speech with natural voice
+  const speakMessage = async (message: string) => {
     if (!audioEnabled) return;
     
-    // Use ElevenLabs if possible, fallback to browser speech
+    setIsSpeaking(true);
+    
+    try {
+      // Try ElevenLabs API directly
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/TX3LPaxmHKxFdv7VOQHJ', {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
+          'xi-api-key': 'sk_d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955'
+        },
+        body: JSON.stringify({
+          text: message,
+          model_id: 'eleven_turbo_v2_5',
+          voice_settings: {
+            stability: 0.6,
+            similarity_boost: 0.85,
+            style: 0.1,
+            use_speaker_boost: true
+          }
+        })
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audioElement = new Audio(audioUrl);
+        
+        audioElement.onended = () => {
+          setIsSpeaking(false);
+          URL.revokeObjectURL(audioUrl);
+          if (isConnected) {
+            setTimeout(() => startListening(), 500);
+          }
+        };
+        
+        await audioElement.play();
+        return;
+      }
+    } catch (error) {
+      console.log('ElevenLabs not available, using browser TTS');
+    }
+    
+    // Fallback to enhanced browser speech synthesis
     if ('speechSynthesis' in window) {
+      // Get available voices
+      const voices = speechSynthesis.getVoices();
+      const preferredVoice = voices.find(voice => 
+        voice.name.includes('Google') || 
+        voice.name.includes('Microsoft') ||
+        voice.lang === 'en-US'
+      ) || voices[0];
+      
       const utterance = new SpeechSynthesisUtterance(message);
+      utterance.voice = preferredVoice;
       utterance.rate = 0.9;
       utterance.pitch = 1.0;
-      utterance.volume = 0.8;
+      utterance.volume = 0.9;
       
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => {
         setIsSpeaking(false);
-        // Auto-restart listening
         if (isConnected) {
           setTimeout(() => startListening(), 500);
         }
@@ -207,38 +259,13 @@ export const SimpleVideoChef: React.FC = () => {
           {/* Chef Video Feed */}
           <div className="relative w-full h-[500px] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
             
-            {/* Professional Chef Photo Placeholder */}
-            <div className="relative w-80 h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
-              <div className="w-full h-full bg-gradient-to-b from-amber-100 to-amber-200 flex items-center justify-center">
-                {/* Simple, clean chef representation */}
-                <div className="relative w-full h-full">
-                  {/* Face */}
-                  <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-gradient-to-b from-amber-200 to-amber-300 rounded-full shadow-lg"></div>
-                  
-                  {/* Chef Hat */}
-                  <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-24 h-16 bg-white rounded-t-full shadow-md"></div>
-                  
-                  {/* Eyes */}
-                  <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 flex gap-4">
-                    <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
-                    <div className="w-2 h-2 bg-gray-700 rounded-full"></div>
-                  </div>
-                  
-                  {/* Mouth */}
-                  <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 transition-all duration-200 ${
-                    isSpeaking ? 'w-4 h-3 bg-red-600 rounded-full animate-pulse' : 'w-3 h-1 bg-red-500 rounded'
-                  }`}></div>
-                  
-                  {/* Chef Coat */}
-                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-40 h-24 bg-white rounded-t-lg shadow-md">
-                    <div className="flex flex-col items-center pt-2 gap-1">
-                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Real Chef Portrait */}
+            <div className="relative">
+              <img 
+                src={chefPortrait} 
+                alt="Chef Marco"
+                className="w-80 h-80 rounded-full object-cover border-4 border-white/20 shadow-2xl"
+              />
               
               {/* Speaking Animation */}
               {isSpeaking && (
@@ -249,14 +276,28 @@ export const SimpleVideoChef: React.FC = () => {
               {isListening && (
                 <div className="absolute inset-0 border-4 border-green-400 rounded-full animate-ping"></div>
               )}
+              
+              {/* Status Indicator */}
+              <div className="absolute bottom-4 right-4 flex gap-2">
+                {isSpeaking && (
+                  <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+                    Speaking...
+                  </div>
+                )}
+                {isListening && (
+                  <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+                    Listening...
+                  </div>
+                )}
+              </div>
             </div>
             
-            {/* Kitchen Background Elements */}
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-10 left-10 w-16 h-12 bg-blue-500 rounded shadow-lg"></div>
-              <div className="absolute top-10 right-10 w-16 h-12 bg-green-500 rounded shadow-lg"></div>
-              <div className="absolute bottom-20 left-20 w-12 h-8 bg-orange-500 rounded shadow-lg"></div>
-              <div className="absolute bottom-20 right-20 w-12 h-8 bg-purple-500 rounded shadow-lg"></div>
+            {/* Professional Kitchen Background Elements */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-10 left-10 w-20 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg"></div>
+              <div className="absolute top-10 right-10 w-20 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg"></div>
+              <div className="absolute bottom-20 left-20 w-16 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg"></div>
+              <div className="absolute bottom-20 right-20 w-16 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded shadow-lg"></div>
             </div>
           </div>
           
