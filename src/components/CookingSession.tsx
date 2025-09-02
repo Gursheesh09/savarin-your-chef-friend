@@ -18,7 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
-import { UltimateAIChef } from "@/components/UltimateAIChef";
+import { RealisticVideoChef } from "@/components/RealisticVideoChef";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -566,9 +566,9 @@ export const CookingSession = () => {
         </Button>
       </div>
 
-      {/* Replace the entire cooking session with Ultimate AI Chef */}
+      {/* Replace with Realistic Video Chef */}
       <div className="min-h-screen">
-        <UltimateAIChef />
+        <RealisticVideoChef />
       </div>
 
       {/* Camera Feed */}
