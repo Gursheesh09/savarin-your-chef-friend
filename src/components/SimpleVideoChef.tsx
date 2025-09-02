@@ -272,7 +272,7 @@ export const SimpleVideoChef: React.FC = () => {
     } catch (e) {
       console.warn('Audio permission/unlock failed', e);
     }
-    const welcome = "Hi! I'm Chef Marco. I'm here to help you cook amazing food. What would you like to make today?";
+    const welcome = "Hey there! Marco here. What's cooking? Need help with something in the kitchen?";
     setCurrentMessage(welcome);
     speakMessage(welcome);
   };
