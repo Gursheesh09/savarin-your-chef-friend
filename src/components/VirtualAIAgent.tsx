@@ -93,39 +93,77 @@ export const VirtualAIAgent = ({
         {/* Avatar Section */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            {/* 3D-style Avatar */}
+            {/* Realistic Chef Avatar */}
             <div 
-              className="relative w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 via-primary/30 to-primary/40 border-3 border-primary/30 backdrop-blur-sm overflow-hidden"
+              className="relative w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-slate-800 to-slate-900"
               style={{ transform: `scale(${breathingScale})` }}
             >
-              {/* Face representation */}
-              <div className="absolute inset-2 rounded-full bg-gradient-to-br from-primary/40 to-accent/60">
-                {/* Eyes */}
-                <div className="absolute top-4 left-3 w-2 h-2 bg-white rounded-full opacity-90">
-                  <div className={`w-1 h-1 bg-primary rounded-full m-0.5 transition-all duration-300 ${isListening ? 'animate-pulse' : ''}`}></div>
-                </div>
-                <div className="absolute top-4 right-3 w-2 h-2 bg-white rounded-full opacity-90">
-                  <div className={`w-1 h-1 bg-primary rounded-full m-0.5 transition-all duration-300 ${isListening ? 'animate-pulse' : ''}`}></div>
+              {/* Chef Image Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-slate-800/90 to-slate-900/95">
+                {/* Chef Hat */}
+                <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-white rounded-t-full border border-gray-200"></div>
+                
+                {/* Chef Face */}
+                <div className="absolute top-5 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full border border-amber-300">
+                  {/* Eyes */}
+                  <div className="absolute top-2 left-1 w-1 h-1 bg-slate-700 rounded-full"></div>
+                  <div className="absolute top-2 right-1 w-1 h-1 bg-slate-700 rounded-full"></div>
+                  {/* Glasses */}
+                  <div className="absolute top-1.5 left-0.5 w-5 h-3 border border-slate-600 rounded-lg opacity-60"></div>
+                  {/* Mouth */}
+                  <div className={`absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-slate-600 rounded-full transition-all duration-150 ${isSpeaking ? 'animate-pulse h-1' : ''}`}></div>
                 </div>
                 
-                {/* Mouth/Speaking indicator */}
-                <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 w-4 h-1 bg-white/80 rounded-full transition-all duration-150 ${isSpeaking ? 'animate-pulse h-2' : ''}`}></div>
+                {/* Chef Coat */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-8 bg-white rounded-t-lg border-t border-l border-r border-gray-200">
+                  {/* Buttons */}
+                  <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0.5 h-0.5 bg-gray-400 rounded-full"></div>
+                  <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-0.5 h-0.5 bg-gray-400 rounded-full"></div>
+                </div>
+                
+                {/* Kitchen Tech Background */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute top-1 left-1 w-3 h-2 bg-cyan-400 rounded border border-cyan-300 animate-pulse"></div>
+                  <div className="absolute top-4 right-1 w-2 h-2 bg-green-400 rounded border border-green-300"></div>
+                  <div className="absolute bottom-2 left-0 w-4 h-1 bg-blue-400 rounded animate-pulse delay-300"></div>
+                  <div className="absolute bottom-1 right-0 w-2 h-1 bg-orange-400 rounded animate-pulse delay-700"></div>
+                </div>
               </div>
+              
+              {/* Speaking Indicator */}
+              {isSpeaking && (
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex gap-0.5">
+                  <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce"></div>
+                  <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-1 h-1 bg-green-400 rounded-full animate-bounce delay-200"></div>
+                </div>
+              )}
+              
+              {/* Listening Indicator */}
+              {isListening && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse opacity-80">
+                  <Mic className="w-2 h-2 text-white m-0.5" />
+                </div>
+              )}
               
               {/* Thinking particles */}
               {isThinking && (
                 <>
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-bounce opacity-80"></div>
-                  <div className="absolute -top-2 right-2 w-1.5 h-1.5 bg-accent rounded-full animate-bounce delay-200 opacity-60"></div>
-                  <div className="absolute -top-1 right-4 w-1 h-1 bg-primary-glow rounded-full animate-bounce delay-400 opacity-70"></div>
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full animate-bounce opacity-80"></div>
+                  <div className="absolute -top-2 right-2 w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-200 opacity-60"></div>
+                  <div className="absolute -top-1 right-4 w-1 h-1 bg-cyan-400 rounded-full animate-bounce delay-400 opacity-70"></div>
                 </>
               )}
             </div>
             
             <div className="space-y-1">
               <h3 className="font-bold text-xl text-foreground">{agentName}</h3>
-              <p className="text-sm text-muted-foreground font-medium">AI Culinary Assistant</p>
-              <p className="text-xs text-muted-foreground">Always here to help you cook</p>
+              <p className="text-sm text-muted-foreground font-medium">Professional Culinary AI</p>
+              <p className="text-xs text-muted-foreground">Real chef, real expertise, AI-powered</p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-600 font-medium">Live & Ready</span>
+              </div>
             </div>
           </div>
           
