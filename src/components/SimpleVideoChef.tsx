@@ -139,7 +139,7 @@ export const SimpleVideoChef: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-5-2025-08-07',
           messages: [
             {
               role: 'system',
@@ -301,6 +301,11 @@ export const SimpleVideoChef: React.FC = () => {
       }
     } else {
       // Simple STT -> OpenAI -> TTS mode
+      if (!openAIKey?.trim()) {
+        toast({ title: 'OpenAI key needed', description: 'Add your OpenAI API key via Add Keys to enable conversation.', variant: 'destructive' });
+        setShowKeyInput(true);
+        return;
+      }
       setIsConnected(true);
       startListening();
     }
