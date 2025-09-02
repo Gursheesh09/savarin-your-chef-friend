@@ -18,7 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
-import { VirtualChefAvatar } from "@/components/VirtualChefAvatar";
+import { VirtualAIAgent } from "@/components/VirtualAIAgent";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -566,19 +566,18 @@ export const CookingSession = () => {
         </Button>
       </div>
 
-      {/* Chef Avatar */}
-      <div className="mb-6">
-        <VirtualChefAvatar 
-          chefPersonality={selectedRecipe ? getChefPersonality(selectedRecipe.cuisine) : 'universal'}
-          isListening={isListening}
-          isSpeaking={isSpeaking}
-          currentMessage={chefMessage}
-          mood="happy"
-          isThinking={isThinking}
-          currentTranscript={currentTranscript}
-          emotionalState={emotionalState}
-        />
-      </div>
+        {/* Virtual AI Agent - Always Visible */}
+        <div className="mb-6">
+          <VirtualAIAgent 
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            currentMessage={chefMessage}
+            isThinking={isThinking}
+            currentTranscript={currentTranscript}
+            agentName="Chef Savarin"
+            personality="friendly"
+          />
+        </div>
 
       {/* Camera Feed */}
       <div className="mb-6">
