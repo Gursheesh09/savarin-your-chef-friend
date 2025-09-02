@@ -4,6 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Mic, MicOff, ChefHat, Volume2, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const ELEVENLABS_API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
+const VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"; // George - warm, professional voice
+const MODEL_ID = "eleven_turbo_v2_5";
+
 export const VirtualChef = () => {
   const { toast } = useToast();
   const [isActive, setIsActive] = useState(false);
@@ -30,16 +34,48 @@ export const VirtualChef = () => {
     });
   };
 
-  const simulateListening = () => {
+  const speakChefResponse = async () => {
     setIsListening(true);
     toast({
-      title: "Listening...",
-      description: "Ask me about techniques, timing, or ingredients!",
+      title: "Chef Savarin is thinking...",
+      description: "Preparing a helpful cooking tip for you!",
     });
 
-    // Simulate processing and response
-    setTimeout(() => {
+    try {
       const response = chefResponses[Math.floor(Math.random() * chefResponses.length)];
+      
+      // Call ElevenLabs TTS API
+      const ttsResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
+          'xi-api-key': ELEVENLABS_API_KEY,
+        },
+        body: JSON.stringify({
+          text: response,
+          model_id: MODEL_ID,
+          voice_settings: {
+            stability: 0.75,
+            similarity_boost: 0.75,
+          }
+        }),
+      });
+
+      if (ttsResponse.ok) {
+        const audioBlob = await ttsResponse.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        // Play the audio
+        await audio.play();
+        
+        // Clean up URL when audio ends
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+        };
+      }
+
       setConversation(prev => [...prev, `Chef Savarin: ${response}`]);
       setIsListening(false);
       
@@ -47,7 +83,16 @@ export const VirtualChef = () => {
         title: "Chef Savarin says:",
         description: response,
       });
-    }, 2000);
+      
+    } catch (error) {
+      console.error('TTS Error:', error);
+      setIsListening(false);
+      toast({
+        title: "Connection issue",
+        description: "Chef Savarin had trouble speaking. Please try again!",
+        variant: "destructive",
+      });
+    }
   };
 
   const endSession = () => {
@@ -89,7 +134,7 @@ export const VirtualChef = () => {
           ) : (
             <div className="flex gap-4 items-center">
               <Button 
-                onClick={simulateListening}
+                onClick={speakChefResponse}
                 disabled={isListening}
                 size="lg"
                 className="bg-gradient-hero hover:shadow-glow transition-all duration-300"
