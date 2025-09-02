@@ -22,7 +22,7 @@ export const SimpleVideoChef: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [elevenLabsKey, setElevenLabsKey] = useState("");
+  const [elevenLabsKey, setElevenLabsKey] = useState("sk_3c85c54a34ff88798c7f84163a389eda88ecd1a21eb570b1");
   const [showKeyInput, setShowKeyInput] = useState(false);
   
   const recognitionRef = useRef<any>(null);
