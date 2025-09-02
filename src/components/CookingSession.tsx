@@ -18,7 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
-import { RealisticVideoChef } from "@/components/RealisticVideoChef";
+import { SimpleVideoChef } from "@/components/SimpleVideoChef";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -566,10 +566,7 @@ export const CookingSession = () => {
         </Button>
       </div>
 
-      {/* Replace with Realistic Video Chef */}
-      <div className="min-h-screen">
-        <RealisticVideoChef />
-      </div>
+      <SimpleVideoChef />
 
       {/* Camera Feed */}
       <div className="mb-6">
