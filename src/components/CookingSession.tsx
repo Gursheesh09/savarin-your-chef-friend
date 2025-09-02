@@ -18,6 +18,7 @@ import {
   Globe
 } from "lucide-react";
 import { CameraFeed } from "@/components/CameraFeed";
+import { VirtualChefAvatar } from "@/components/VirtualChefAvatar";
 import { useToast } from "@/hooks/use-toast";
 
 interface CookingStep {
@@ -199,6 +200,8 @@ export const CookingSession = () => {
   const [sessionTime, setSessionTime] = useState(0);
   const [isListening, setIsListening] = useState(false);
   const [userQuestion, setUserQuestion] = useState("");
+  const [chefMessage, setChefMessage] = useState("");
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const timerRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -232,6 +235,11 @@ export const CookingSession = () => {
       const utterance = new SpeechSynthesisUtterance(welcome);
       utterance.rate = 0.9;
       utterance.pitch = 1;
+      
+      setIsSpeaking(true);
+      setChefMessage(welcome);
+      utterance.onend = () => setIsSpeaking(false);
+      
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -258,6 +266,11 @@ export const CookingSession = () => {
         const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
         const utterance = new SpeechSynthesisUtterance(instruction);
         utterance.rate = 0.9;
+        
+        setIsSpeaking(true);
+        setChefMessage(instruction);
+        utterance.onend = () => setIsSpeaking(false);
+        
         window.speechSynthesis.speak(utterance);
       }
       
@@ -314,6 +327,11 @@ export const CookingSession = () => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(response);
       utterance.rate = 0.9;
+      
+      setIsSpeaking(true);
+      setChefMessage(response);
+      utterance.onend = () => setIsSpeaking(false);
+      
       window.speechSynthesis.speak(utterance);
     }
 
@@ -327,6 +345,19 @@ export const CookingSession = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getChefPersonality = (cuisine: string) => {
+    switch (cuisine.toLowerCase()) {
+      case 'punjabi':
+        return 'punjabi' as const;
+      case 'chinese':
+        return 'chinese' as const;
+      case 'french':
+        return 'french' as const;
+      default:
+        return 'universal' as const;
+    }
   };
 
   if (!isSessionActive) {
@@ -400,6 +431,17 @@ export const CookingSession = () => {
         <Button onClick={endSession} variant="outline" size="sm">
           End Session
         </Button>
+      </div>
+
+      {/* Chef Avatar */}
+      <div className="mb-6">
+        <VirtualChefAvatar 
+          chefPersonality={selectedRecipe ? getChefPersonality(selectedRecipe.cuisine) : 'universal'}
+          isListening={isListening}
+          isSpeaking={isSpeaking}
+          currentMessage={chefMessage}
+          mood="happy"
+        />
       </div>
 
       {/* Camera Feed */}
