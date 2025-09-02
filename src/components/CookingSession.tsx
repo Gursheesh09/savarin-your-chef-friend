@@ -39,32 +39,152 @@ interface Recipe {
 
 const SAMPLE_RECIPES: Recipe[] = [
   {
-    name: "Butter Chicken",
-    cuisine: "Indian",
+    name: "Makki Di Roti te Sarson Da Saag",
+    cuisine: "Punjabi",
     difficulty: "Intermediate",
-    culturalStory: "Born in the 1950s at Moti Mahal in Delhi, this dish represents the beautiful fusion of Mughlai and Punjabi cooking traditions. Every family has their secret touch - some add kasuri methi, others a hint of jaggery.",
-    ingredients: ["Chicken", "Tomatoes", "Cream", "Butter", "Garam Masala", "Ginger-Garlic Paste"],
+    culturalStory: "ਸਰਦੀਆਂ ਦੀ ਖੁਸ਼ੀ! The heart of Punjab in winter! This isn't just food, it's love on a plate. Every Punjabi mother makes this with ghee made from her own hands, served with gud and makhan. The warmth that fills your soul!",
+    ingredients: ["Sarson (Mustard Greens)", "Makki (Corn Flour)", "Ghee", "Gud (Jaggery)", "Onions", "Ginger-Garlic"],
     steps: [
       {
         id: 1,
-        instruction: "Marinate chicken pieces in yogurt, garam masala, and ginger-garlic paste",
-        timeEstimate: "30 minutes",
-        culturalTip: "Just like Dadi would say - the longer you marinate, the more the chicken absorbs the love and spices!",
-        technique: "Cut chicken against the grain for tenderness"
+        instruction: "Wash and chop sarson leaves, boil with spinach and bathua",
+        timeEstimate: "20 minutes",
+        culturalTip: "ਬੀਬੀ ਜੀ would say: 'Puttar, dhungan lagao!' Add that smoky flavor - put a burning coal in ghee over the saag for 2 minutes!",
+        technique: "Don't overcook - preserve the green color and nutrients"
       },
       {
         id: 2,
-        instruction: "Heat butter in pan and cook marinated chicken until golden",
-        timeEstimate: "8-10 minutes",
-        culturalTip: "Listen for the sizzle - that's the sound of flavors awakening, just like in the bustling kitchens of Old Delhi",
-        videoHint: "Sanjeev Kapoor's technique: Don't overcrowd the pan"
+        instruction: "Knead makki flour with warm water and salt",
+        timeEstimate: "10 minutes",
+        culturalTip: "Make it like your Nani did - add a bit of ghee in the dough. The roti should be thick like love, not thin like paper!",
+        technique: "Use warm water, knead gently - corn flour breaks easily"
       },
       {
         id: 3,
-        instruction: "Prepare the tomato-cream base with onions and spices",
+        instruction: "Cook roti on tawa, serve hot with fresh butter and gud",
         timeEstimate: "15 minutes",
-        culturalTip: "The secret is patience - let the tomatoes break down completely, like how your mother waited for the perfect masala",
-        technique: "Blend to silky smooth consistency"
+        culturalTip: "ਸਾਡੇ ਘਰ ਦਾ ਰੀਤ - serve with a big chunk of makhan and gud. Eat with your hands, that's the Punjabi way!",
+        technique: "Cook on medium heat, puff it directly on flame for that authentic taste"
+      }
+    ]
+  },
+  {
+    name: "Chole Bhature",
+    cuisine: "Punjabi",
+    difficulty: "Advanced",
+    culturalStory: "Delhi di galiyon se Punjab tak! This combo is pure joy - fluffy bhature with spicy chole. Every bite reminds you of Chandni Chowk and your Mummy ji's Sunday special!",
+    ingredients: ["Kabuli Chana", "Flour", "Yogurt", "Tea Bags", "Garam Masala", "Onions"],
+    steps: [
+      {
+        id: 1,
+        instruction: "Soak chana overnight, pressure cook with tea bags for dark color",
+        timeEstimate: "45 minutes",
+        culturalTip: "ਚਾਹ ਦੀ ਪੱਤੀ secret hai! Tea bags give that restaurant-style dark color. Your guests will ask 'Kaisi banai hai!'",
+        technique: "Add baking soda while cooking for softer chana"
+      },
+      {
+        id: 2,
+        instruction: "Make bhature dough with maida, yogurt, and baking powder",
+        timeEstimate: "2 hours resting",
+        culturalTip: "Patience, puttar! Let the dough rest like your Dadi would. Good things take time, just like finding the right rishta!",
+        technique: "Knead until smooth, oil the surface to prevent drying"
+      },
+      {
+        id: 3,
+        instruction: "Deep fry bhature and serve with hot chole and pickles",
+        timeEstimate: "20 minutes",
+        culturalTip: "ਭਟੂਰੇ should puff up like balloons! Serve immediately with pyaz, hari mirch, and lots of love!",
+        technique: "Oil should be medium-hot, roll thin but not too thin"
+      }
+    ]
+  },
+  {
+    name: "Kung Pao Chicken (宫保鸡丁)",
+    cuisine: "Chinese",
+    difficulty: "Intermediate",
+    culturalStory: "From the kitchens of Sichuan to your heart! Named after Ding Baozhen, this dish carries the soul of Chinese wok hei - the breath of the wok. Every Chinese grandmother has her secret balance of sweet, sour, and spicy!",
+    ingredients: ["Chicken", "Peanuts", "Sichuan Peppercorns", "Dried Chilies", "Soy Sauce", "Rice Wine"],
+    steps: [
+      {
+        id: 1,
+        instruction: "Marinate diced chicken with soy sauce, rice wine, and cornstarch",
+        timeEstimate: "20 minutes",
+        culturalTip: "老奶奶说 (Lǎo nǎi nai shuō) - Grandma says: 'Velvet the chicken!' This makes it tender like silk, just like in the best restaurants in Beijing!",
+        technique: "Velveting technique - blanch in oil briefly before stir-frying"
+      },
+      {
+        id: 2,
+        instruction: "Heat wok until smoking, stir-fry chicken with high heat",
+        timeEstimate: "3 minutes",
+        culturalTip: "Wok hei is everything! The wok must breathe fire - that's the secret every Chinese chef knows. Quick hands, hot wok!",
+        technique: "Keep ingredients moving constantly, high heat throughout"
+      },
+      {
+        id: 3,
+        instruction: "Add sauce, peanuts, and Sichuan peppercorns, toss quickly",
+        timeEstimate: "2 minutes",
+        culturalTip: "The má là (numbing spicy) sensation! Sichuan peppercorns should make your tongue dance - that's authentic Chinese cooking!",
+        technique: "Sauce should coat everything evenly, serve immediately"
+      }
+    ]
+  },
+  {
+    name: "Rajma Chawal",
+    cuisine: "Punjabi",
+    difficulty: "Beginner",
+    culturalStory: "Sunday da comfort food! Every Punjabi household knows this magic - red kidney beans swimming in rich gravy with jeera rice. It's what Mama makes when you're homesick!",
+    ingredients: ["Rajma (Kidney Beans)", "Onions", "Tomatoes", "Basmati Rice", "Garam Masala", "Ghee"],
+    steps: [
+      {
+        id: 1,
+        instruction: "Soak rajma overnight, pressure cook until soft and creamy",
+        timeEstimate: "30 minutes",
+        culturalTip: "ਰਾਜਮਾ should melt in your mouth like butter! Don't rush this step - well-cooked rajma is half the battle won!",
+        technique: "Add salt only after beans are cooked to prevent hardening"
+      },
+      {
+        id: 2,
+        instruction: "Make masala base with onion-tomato and spices",
+        timeEstimate: "15 minutes",
+        culturalTip: "The bhuna technique! Cook until oil separates - that's when you know the masala is perfect, just like your Mummy taught!",
+        technique: "Cook masala on medium heat, don't let it burn"
+      },
+      {
+        id: 3,
+        instruction: "Combine rajma with masala, simmer and serve with rice",
+        timeEstimate: "20 minutes",
+        culturalTip: "ਚੌਂਕ ਲਗਾਓ! Add a tadka of ghee, jeera, and hing at the end. Serve with butter on top - that's the Punjabi way!",
+        technique: "Let it simmer to develop flavors, adjust consistency with cooking water"
+      }
+    ]
+  },
+  {
+    name: "Mapo Tofu (麻婆豆腐)",
+    cuisine: "Chinese",
+    difficulty: "Intermediate",
+    culturalStory: "A legend from Chengdu! Created by the pockmarked grandmother (麻婆) - this dish has soul, fire, and the tender love of silky tofu dancing with spicy Sichuan flavors!",
+    ingredients: ["Soft Tofu", "Ground Pork", "Doubanjiang", "Sichuan Peppercorns", "Scallions", "Garlic"],
+    steps: [
+      {
+        id: 1,
+        instruction: "Cut tofu into cubes, blanch gently in salted water",
+        timeEstimate: "5 minutes",
+        culturalTip: "轻手轻脚 (Qīng shǒu qīng jiǎo) - gentle hands, gentle feet! Tofu is like respect - handle with care or it breaks!",
+        technique: "Use a spoon to transfer tofu, don't break the silky texture"
+      },
+      {
+        id: 2,
+        instruction: "Stir-fry pork with doubanjiang until fragrant and red",
+        timeEstimate: "5 minutes",
+        culturalTip: "豆瓣酱 is the soul of Sichuan! Every Chinese family has their favorite brand. The redder the oil, the happier the ancestors!",
+        technique: "Cook until oil turns red from the bean paste"
+      },
+      {
+        id: 3,
+        instruction: "Add tofu gently, simmer with sauce and Sichuan peppercorns",
+        timeEstimate: "8 minutes",
+        culturalTip: "麻辣 perfection! The numbness and spice should make you sweat with joy - that's how you know it's authentic!",
+        technique: "Don't stir too much, let the tofu absorb the flavors gently"
       }
     ]
   }
