@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,22 @@ import { Mic, MicOff, ChefHat, Clock, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { VirtualChef } from "@/components/VirtualChef";
 import { useNavigate } from "react-router-dom";
+
+// Extend Window interface for speech recognition
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: any;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
 
 interface Recipe {
   name: string;
@@ -23,6 +39,39 @@ export const Demo = () => {
   const [currentRecipe, setCurrentRecipe] = useState<Recipe | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+      
+      recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        handleVoiceCommand(transcript);
+      };
+      
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+      
+      recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast({
+          title: "Voice recognition error",
+          description: "Please try again or check your microphone settings.",
+          variant: "destructive",
+        });
+      };
+      
+      setRecognition(recognitionInstance);
+    }
+  }, []);
 
   const recipes: Record<string, Recipe> = {
     comfort: {
@@ -94,28 +143,78 @@ export const Demo = () => {
     });
   };
 
+  const handleVoiceCommand = (transcript: string) => {
+    console.log('Voice command received:', transcript);
+    
+    const responses: Record<string, string> = {
+      'next step': "Moving to the next step!",
+      'previous step': "Going back to the previous step!",
+      'repeat': currentRecipe ? currentRecipe.steps[currentStep] : "Please select a recipe first",
+      'help': "You can say: 'next step', 'previous step', 'repeat', 'how long', or ask about techniques",
+      'how long': currentRecipe ? `This recipe takes ${currentRecipe.cookTime} total` : "Please select a recipe first",
+      'what temperature': "For this step, use medium heat. Adjust as needed based on your stove.",
+      'is it ready': "Look for the visual and aromatic cues mentioned in the current step",
+      'substitute': "You can substitute most herbs with dried versions using 1/3 the amount"
+    };
+
+    // Handle navigation commands
+    if (transcript.includes('next') && currentRecipe && currentStep < currentRecipe.steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+      speakText("Moving to the next step");
+      return;
+    }
+    
+    if (transcript.includes('previous') && currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+      speakText("Going back to the previous step");
+      return;
+    }
+
+    // Find matching response
+    const matchedKey = Object.keys(responses).find(key => 
+      transcript.includes(key.replace(' ', '')) || transcript.includes(key)
+    );
+    
+    const response = matchedKey ? responses[matchedKey] : 
+      "I didn't catch that. Try saying 'help' to see what I can do, or ask about cooking techniques!";
+    
+    speakText(response);
+    toast({
+      title: "Savarin says:",
+      description: response,
+    });
+  };
+
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 0.8;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleVoiceToggle = () => {
-    setIsListening(!isListening);
-    if (!isListening) {
+    if (!recognition) {
+      toast({
+        title: "Voice not supported",
+        description: "Your browser doesn't support speech recognition. Try Chrome or Edge.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognition.start();
       toast({
         title: "Voice mode activated",
-        description: "Speak naturally - ask about timing, temperature, or techniques",
+        description: "Listening... Try saying 'help' to see what I can do!",
       });
-      
-      // Simulate voice recognition
-      setTimeout(() => {
-        const responses = [
-          "The garlic should sizzle gently - if it's browning too fast, lower the heat",
-          "Your pasta water should be as salty as the sea - taste it!",
-          "For perfect cream sauce, add pasta water gradually while tossing",
-          "The salmon is done when it flakes easily with a fork"
-        ];
-        toast({
-          title: "Savarin says:",
-          description: responses[Math.floor(Math.random() * responses.length)],
-        });
-        setIsListening(false);
-      }, 3000);
     }
   };
 
