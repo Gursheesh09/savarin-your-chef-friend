@@ -28,7 +28,7 @@ export const SimpleVideoChef: React.FC = () => {
   const conversation = useConversation({
     onConnect: () => {
       setIsConnected(true);
-      setCurrentMessage("Hey! I can see you now. What are we cooking today?");
+      setCurrentMessage("Excellent! I can see your kitchen workspace now. Let's get cooking! Show me what ingredients you have, and I'll guide you through every step like a real chef.");
     },
     onDisconnect: () => setIsConnected(false),
     onMessage: (msg: any) => {
@@ -61,7 +61,7 @@ export const SimpleVideoChef: React.FC = () => {
         });
       } catch (err) {
         console.error('Connection failed:', err);
-        setCurrentMessage("Hi! I'm ready to help you cook. What's on the menu?");
+        setCurrentMessage("Perfect! I'm Chef Marco, your personal cooking instructor. Let's create something delicious together. What ingredients are you working with today?");
         setIsConnected(true);
       }
     }
