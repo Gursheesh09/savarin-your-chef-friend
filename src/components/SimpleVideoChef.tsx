@@ -23,6 +23,8 @@ export const SimpleVideoChef: React.FC = () => {
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [elevenLabsKey, setElevenLabsKey] = useState("sk_15d2755552e72979fe4e50ffdbdeb76e02a472ef8ffab983");
+  const [openAIKey, setOpenAIKey] = useState("");
+  const [userInput, setUserInput] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
   
   const recognitionRef = useRef<any>(null);
@@ -35,6 +37,16 @@ export const SimpleVideoChef: React.FC = () => {
         recognitionRef.current.stop();
       }
     };
+  }, []);
+
+  // Load saved API keys
+  useEffect(() => {
+    try {
+      const el = localStorage.getItem('elevenLabsKey');
+      if (el) setElevenLabsKey(el);
+      const ok = localStorage.getItem('openAIKey');
+      if (ok) setOpenAIKey(ok);
+    } catch {}
   }, []);
 
   // Unlock browser audio on first interaction (fixes autoplay issues)
@@ -106,7 +118,7 @@ export const SimpleVideoChef: React.FC = () => {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${(openAIKey || API_KEY).trim()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -461,15 +473,25 @@ export const SimpleVideoChef: React.FC = () => {
         {/* API Key Input */}
         {showKeyInput && (
           <Card className="mb-4 p-4 bg-gray-900 border-gray-700">
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 type="password"
-                placeholder="Enter your ElevenLabs API key for natural voice"
+                placeholder="ElevenLabs API key (for natural voice)"
                 value={elevenLabsKey}
                 onChange={(e) => setElevenLabsKey(e.target.value)}
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
               />
-              <Button onClick={() => setShowKeyInput(false)} className="bg-green-600">
+              <input
+                type="password"
+                placeholder="OpenAI API key (for conversation)"
+                value={openAIKey}
+                onChange={(e) => setOpenAIKey(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-xs text-gray-400">Keys are stored locally in your browser.</span>
+              <Button onClick={() => { try { localStorage.setItem('elevenLabsKey', elevenLabsKey); localStorage.setItem('openAIKey', openAIKey); toast({ title: 'Saved', description: 'API keys saved to this browser.' }); } catch {} setShowKeyInput(false); }} className="bg-green-600">
                 Save
               </Button>
             </div>
@@ -533,6 +555,23 @@ export const SimpleVideoChef: React.FC = () => {
               >
                 <PhoneOff className="w-6 h-6" />
               </Button>
+
+              {/* Manual message input (fallback if mic has issues) */}
+              <div className="w-full max-w-xl mx-auto mt-4 flex gap-2">
+                <input
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type your question to Chef Marco..."
+                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
+                />
+                <Button
+                  onClick={() => { const text = userInput.trim(); if (text) { handleUserMessage(text); setUserInput(""); } }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Send
+                </Button>
+              </div>
             </>
           )}
         </div>
