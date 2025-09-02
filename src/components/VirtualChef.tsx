@@ -196,7 +196,7 @@ export const VirtualChef = () => {
           <ChefHat className="w-10 h-10 text-primary-foreground" />
         </div>
         <h2 className="text-2xl font-bold text-charcoal mb-2">Chef Savarin</h2>
-        <p className="text-muted-foreground text-sm">Ask me anything about cooking!</p>
+        <p className="text-muted-foreground text-sm">Your virtual cooking companion - teaching with love like family! 👨‍🍳</p>
       </div>
 
       {/* Chat Messages */}
