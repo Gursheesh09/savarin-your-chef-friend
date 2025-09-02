@@ -28,7 +28,7 @@ export const SimpleVideoChef: React.FC = () => {
   const conversation = useConversation({
     onConnect: () => {
       setIsConnected(true);
-      setCurrentMessage("Excellent! I can see your kitchen workspace now. Let's get cooking! Show me what ingredients you have, and I'll guide you through every step like a real chef.");
+      setCurrentMessage("Great—your camera is on locally. I'm Chef Marco and I'll guide you step by step. What ingredients do you have ready?");
     },
     onDisconnect: () => setIsConnected(false),
     onMessage: (msg: any) => {
@@ -48,6 +48,7 @@ export const SimpleVideoChef: React.FC = () => {
       return stream;
     } catch (e) {
       console.warn('Camera access failed', e);
+      setCurrentMessage("I couldn't access your camera. Please allow camera/mic permissions, or I'll still guide you without video. What ingredients do you have?");
       return null;
     }
   };
