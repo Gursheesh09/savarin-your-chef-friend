@@ -37,6 +37,24 @@ export const SimpleVideoChef: React.FC = () => {
     };
   }, []);
 
+  // Unlock browser audio on first interaction (fixes autoplay issues)
+  const unlockAudio = async () => {
+    try {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return false;
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') await ctx.resume();
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Simple speech recognition
   const startListening = useCallback(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -167,7 +185,14 @@ export const SimpleVideoChef: React.FC = () => {
             }
           };
           
-          await audioElement.play();
+          audioElement.crossOrigin = 'anonymous';
+          audioElement.volume = 1.0;
+          try {
+            await audioElement.play();
+          } catch (err) {
+            toast({ title: 'Autoplay blocked', description: 'Tap Call or Test audio to enable sound.', variant: 'destructive' });
+            setIsSpeaking(false);
+          }
           return;
         } else {
           const errText = await response.text();
@@ -227,8 +252,14 @@ export const SimpleVideoChef: React.FC = () => {
     }
   };
 
-  const startCall = () => {
+  const startCall = async () => {
     setIsConnected(true);
+    try {
+      await unlockAudio();
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      console.warn('Audio permission/unlock failed', e);
+    }
     const welcome = "Hi! I'm Chef Marco. I'm here to help you cook amazing food. What would you like to make today?";
     setCurrentMessage(welcome);
     speakMessage(welcome);
@@ -448,7 +479,7 @@ export const SimpleVideoChef: React.FC = () => {
         {/* Simple Controls */}
         <div className="flex items-center justify-center gap-6 mt-6">
           {!isConnected ? (
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-3">
               <Button
                 onClick={startCall}
                 className="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg"
@@ -457,12 +488,20 @@ export const SimpleVideoChef: React.FC = () => {
                 Call Chef Marco
               </Button>
               
-              <Button
-                onClick={() => setShowKeyInput(!showKeyInput)}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm"
-              >
-                {elevenLabsKey ? '✓ ElevenLabs Connected' : 'Add ElevenLabs API Key'}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => setShowKeyInput(!showKeyInput)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm"
+                >
+                  {elevenLabsKey ? '✓ ElevenLabs Connected' : 'Add ElevenLabs API Key'}
+                </Button>
+                <Button
+                  onClick={async () => { await unlockAudio(); await speakMessage("Audio test. You should hear Brian now."); }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+                >
+                  Test audio
+                </Button>
+              </div>
             </div>
           ) : (
             <>
