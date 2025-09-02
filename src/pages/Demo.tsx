@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, ChefHat, Clock, Thermometer } from "lucide-react";
+import { Mic, MicOff, ChefHat, Clock, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { VirtualChef } from "@/components/VirtualChef";
+import { useNavigate } from "react-router-dom";
 
 interface Recipe {
   name: string;
@@ -16,6 +17,7 @@ interface Recipe {
 }
 
 export const Demo = () => {
+  const navigate = useNavigate();
   const [isListening, setIsListening] = useState(false);
   const [currentMood, setCurrentMood] = useState("");
   const [currentRecipe, setCurrentRecipe] = useState<Recipe | null>(null);
@@ -132,6 +134,22 @@ export const Demo = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto">
+        {/* Navigation Header */}
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 hover:bg-accent"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </Button>
+          <Badge variant="outline" className="text-xs">
+            Live Demo
+          </Badge>
+        </div>
+        
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-charcoal mb-4">
             Savarin AI Demo
