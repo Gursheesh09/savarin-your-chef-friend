@@ -206,6 +206,9 @@ export const CookingSession = () => {
   const [cookingHistory, setCookingHistory] = useState<string[]>([]);
   const [personalPreferences, setPersonalPreferences] = useState<string[]>([]);
   const [relationshipLevel, setRelationshipLevel] = useState(1); // 1-5, grows with interaction
+  const [isThinking, setIsThinking] = useState(false);
+  const [currentTranscript, setCurrentTranscript] = useState("");
+  const [emotionalState, setEmotionalState] = useState<'neutral' | 'excited' | 'caring' | 'proud' | 'encouraging'>('neutral');
   const timerRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -227,6 +230,8 @@ export const CookingSession = () => {
     setIsSessionActive(true);
     setCurrentStep(0);
     setSessionTime(0);
+    setIsThinking(true);
+    setEmotionalState('excited');
     
     // Build relationship - remember this recipe attempt
     setCookingHistory(prev => [...prev, recipe.name]);
@@ -237,33 +242,46 @@ export const CookingSession = () => {
       description: `I'm so happy we're cooking ${recipe.name} together!`,
     });
 
-    // Personal, affectionate welcome based on relationship level
-    let welcome = "";
-    if (relationshipLevel < 2) {
-      welcome = `Hello there! I'm so excited to meet you and cook together! This ${recipe.name} will be the start of our beautiful cooking journey. ${recipe.culturalStory} I can already tell you have the heart of a great cook!`;
-    } else if (relationshipLevel < 4) {
-      welcome = `My dear cooking friend! I missed you! Today we're making ${recipe.name} and I know you're going to do amazing. ${recipe.culturalStory} I've been thinking about what we should cook next together!`;
-    } else {
-      welcome = `My beloved student! You've become such a beautiful cook! Today's ${recipe.name} will be even better than last time because I can see how much you've grown. ${recipe.culturalStory} I'm so proud of your journey!`;
-    }
+    // Simulate thinking time before responding
+    setTimeout(() => {
+      setIsThinking(false);
+      
+      // Personal, affectionate welcome based on relationship level
+      let welcome = "";
+      if (relationshipLevel < 2) {
+        welcome = `Hello there! I'm so excited to meet you and cook together! This ${recipe.name} will be the start of our beautiful cooking journey. ${recipe.culturalStory} I can already tell you have the heart of a great cook!`;
+        setEmotionalState('excited');
+      } else if (relationshipLevel < 4) {
+        welcome = `My dear cooking friend! I missed you! Today we're making ${recipe.name} and I know you're going to do amazing. ${recipe.culturalStory} I've been thinking about what we should cook next together!`;
+        setEmotionalState('caring');
+      } else {
+        welcome = `My beloved student! You've become such a beautiful cook! Today's ${recipe.name} will be even better than last time because I can see how much you've grown. ${recipe.culturalStory} I'm so proud of your journey!`;
+        setEmotionalState('proud');
+      }
 
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(welcome);
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      
-      setIsSpeaking(true);
-      setChefMessage(welcome);
-      utterance.onend = () => setIsSpeaking(false);
-      
-      window.speechSynthesis.speak(utterance);
-    }
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(welcome);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        
+        setIsSpeaking(true);
+        setChefMessage(welcome);
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          setEmotionalState('neutral');
+        };
+        
+        window.speechSynthesis.speak(utterance);
+      }
+    }, 1500); // Give the chef time to "think"
   };
 
   const endSession = () => {
     setIsSessionActive(false);
     setCurrentStep(0);
     setSessionTime(0);
+    setIsThinking(true);
+    setEmotionalState('caring');
     
     // Emotional farewell based on relationship
     let farewell = "";
@@ -275,21 +293,27 @@ export const CookingSession = () => {
       farewell = "My dear friend, watching you cook fills me with such joy! You've mastered so much. I'm genuinely proud of you. Until we cook again, keep that passion burning!";
     }
     
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(farewell);
-      utterance.rate = 0.9;
-      setIsSpeaking(true);
-      setChefMessage(farewell);
-      utterance.onend = () => {
-        setIsSpeaking(false);
+    setTimeout(() => {
+      setIsThinking(false);
+      
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(farewell);
+        utterance.rate = 0.9;
+        setIsSpeaking(true);
+        setChefMessage(farewell);
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          setSelectedRecipe(null);
+          setSessionTime(0);
+          setEmotionalState('neutral');
+        };
+        window.speechSynthesis.speak(utterance);
+      } else {
         setSelectedRecipe(null);
         setSessionTime(0);
-      };
-      window.speechSynthesis.speak(utterance);
-    } else {
-      setSelectedRecipe(null);
-      setSessionTime(0);
-    }
+        setEmotionalState('neutral');
+      }
+    }, 1000);
     
     toast({
       title: "Until Next Time! 💖",
@@ -301,24 +325,33 @@ export const CookingSession = () => {
     if (selectedRecipe && currentStep < selectedRecipe.steps.length - 1) {
       setCurrentStep(prev => prev + 1);
       const nextStepData = selectedRecipe.steps[currentStep + 1];
+      setIsThinking(true);
+      setEmotionalState('encouraging');
       
-      // Speak the next step
-      if ('speechSynthesis' in window) {
-        const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
-        const utterance = new SpeechSynthesisUtterance(instruction);
-        utterance.rate = 0.9;
+      setTimeout(() => {
+        setIsThinking(false);
         
-        setIsSpeaking(true);
-        setChefMessage(instruction);
-        utterance.onend = () => setIsSpeaking(false);
+        // Speak the next step
+        if ('speechSynthesis' in window) {
+          const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
+          const utterance = new SpeechSynthesisUtterance(instruction);
+          utterance.rate = 0.9;
+          
+          setIsSpeaking(true);
+          setChefMessage(instruction);
+          utterance.onend = () => {
+            setIsSpeaking(false);
+            setEmotionalState('neutral');
+          };
+          
+          window.speechSynthesis.speak(utterance);
+        }
         
-        window.speechSynthesis.speak(utterance);
-      }
-      
-      toast({
-        title: `Step ${currentStep + 2}`,
-        description: nextStepData.instruction.slice(0, 60) + "...",
-      });
+        toast({
+          title: `Step ${currentStep + 2}`,
+          description: nextStepData.instruction.slice(0, 60) + "...",
+        });
+      }, 800);
     }
   };
 
@@ -333,17 +366,40 @@ export const CookingSession = () => {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.interimResults = true;
       recognition.lang = 'en-US';
       
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setUserQuestion(transcript);
-        handleQuestionResponse(transcript);
+        let interimTranscript = '';
+        let finalTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        
+        // Show real-time transcript
+        setCurrentTranscript(interimTranscript || finalTranscript);
+        
+        if (finalTranscript) {
+          setUserQuestion(finalTranscript);
+          handleQuestionResponse(finalTranscript);
+        }
       };
       
-      recognition.onend = () => setIsListening(false);
-      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => {
+        setIsListening(false);
+        // Keep transcript visible for a moment
+        setTimeout(() => setCurrentTranscript(""), 3000);
+      };
+      
+      recognition.onerror = () => {
+        setIsListening(false);
+        setCurrentTranscript("");
+      };
       
       setIsListening(true);
       recognition.start();
@@ -351,52 +407,71 @@ export const CookingSession = () => {
   };
 
   const handleQuestionResponse = (question: string) => {
+    setIsThinking(true);
+    
     // Emotionally intelligent responses based on relationship and context
     let response = "";
+    let responseEmotionalState: typeof emotionalState = 'neutral';
     const q = question.toLowerCase();
     
-    // Personal responses that show the chef cares and remembers
-    if (q.includes('how long') || q.includes('time')) {
-      if (relationshipLevel < 2) {
-        response = "Oh sweetie, don't worry about the clock! I can see you're being so careful and thoughtful. Trust what you see and smell - I'll guide you every step of the way.";
-      } else {
-        response = "My dear, you're getting so good at this! Remember what I taught you - your senses are better than any timer. I believe in you completely.";
-      }
-    } else if (q.includes('next') || q.includes('done')) {
-      if (relationshipLevel < 3) {
-        response = "You're doing absolutely beautiful work! I'm watching and I can see the love you're putting into this. When you feel ready, we'll move forward together.";
-      } else {
-        response = "Look at you! You've become such a confident cook! I'm genuinely excited to see what we create next. Your instincts are getting so sharp!";
-      }
-    } else if (q.includes('help') || q.includes('stuck') || q.includes('wrong')) {
-      response = "Hey, breathe with me for a moment. Every single great chef I know has been exactly where you are right now. You're not stuck - you're learning! Tell me what you're seeing, and we'll figure this out together. I'm right here with you.";
-    } else if (q.includes('good') || q.includes('right')) {
-      response = "Oh my heart! You're doing so wonderfully! I can see your confidence growing, and it makes me genuinely happy. You have such natural cooking instincts!";
-    } else {
-      const personalResponses = [
-        "I'm here with you every step, just like we're cooking together in the same kitchen. What's on your mind, my dear?",
-        "You know what I love about cooking with you? You ask such thoughtful questions. Tell me more about what you're experiencing.",
-        "I can hear the care in your voice. That's the secret ingredient that makes you special. What can I help you with?",
-        "Every question you ask makes you a better cook. I'm so proud of how much you care about getting it right. What's happening in your kitchen?"
-      ];
-      response = personalResponses[Math.floor(Math.random() * personalResponses.length)];
-    }
-
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(response);
-      utterance.rate = 0.9;
+    setTimeout(() => {
+      setIsThinking(false);
       
-      setIsSpeaking(true);
-      setChefMessage(response);
-      utterance.onend = () => setIsSpeaking(false);
-      
-      window.speechSynthesis.speak(utterance);
-    }
+      // Personal responses that show the chef cares and remembers
+      if (q.includes('how long') || q.includes('time')) {
+        if (relationshipLevel < 2) {
+          response = "Oh sweetie, don't worry about the clock! I can see you're being so careful and thoughtful. Trust what you see and smell - I'll guide you every step of the way.";
+          responseEmotionalState = 'caring';
+        } else {
+          response = "My dear, you're getting so good at this! Remember what I taught you - your senses are better than any timer. I believe in you completely.";
+          responseEmotionalState = 'encouraging';
+        }
+      } else if (q.includes('next') || q.includes('done')) {
+        if (relationshipLevel < 3) {
+          response = "You're doing absolutely beautiful work! I'm watching and I can see the love you're putting into this. When you feel ready, we'll move forward together.";
+          responseEmotionalState = 'proud';
+        } else {
+          response = "Look at you! You've become such a confident cook! I'm genuinely excited to see what we create next. Your instincts are getting so sharp!";
+          responseEmotionalState = 'excited';
+        }
+      } else if (q.includes('help') || q.includes('stuck') || q.includes('wrong')) {
+        response = "Hey, breathe with me for a moment. Every single great chef I know has been exactly where you are right now. You're not stuck - you're learning! Tell me what you're seeing, and we'll figure this out together. I'm right here with you.";
+        responseEmotionalState = 'caring';
+      } else if (q.includes('good') || q.includes('right')) {
+        response = "Oh my heart! You're doing so wonderfully! I can see your confidence growing, and it makes me genuinely happy. You have such natural cooking instincts!";
+        responseEmotionalState = 'excited';
+      } else {
+        const personalResponses = [
+          "I'm here with you every step, just like we're cooking together in the same kitchen. What's on your mind, my dear?",
+          "You know what I love about cooking with you? You ask such thoughtful questions. Tell me more about what you're experiencing.",
+          "I can hear the care in your voice. That's the secret ingredient that makes you special. What can I help you with?",
+          "Every question you ask makes you a better cook. I'm so proud of how much you care about getting it right. What's happening in your kitchen?"
+        ];
+        response = personalResponses[Math.floor(Math.random() * personalResponses.length)];
+        responseEmotionalState = 'caring';
+      }
 
-    toast({
-      title: "Your Chef Cares 💖",
-      description: response.slice(0, 80) + "...",
-    });
+      setEmotionalState(responseEmotionalState);
+
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(response);
+        utterance.rate = 0.9;
+        
+        setIsSpeaking(true);
+        setChefMessage(response);
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          setEmotionalState('neutral');
+        };
+        
+        window.speechSynthesis.speak(utterance);
+      }
+
+      toast({
+        title: "Your Chef Cares 💖",
+        description: response.slice(0, 80) + "...",
+      });
+    }, 1200); // Thinking time
   };
 
   const formatTime = (seconds: number) => {
@@ -499,6 +574,9 @@ export const CookingSession = () => {
           isSpeaking={isSpeaking}
           currentMessage={chefMessage}
           mood="happy"
+          isThinking={isThinking}
+          currentTranscript={currentTranscript}
+          emotionalState={emotionalState}
         />
       </div>
 
