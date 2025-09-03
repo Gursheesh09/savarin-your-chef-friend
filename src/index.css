@@ -8,57 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Savarin Design System - Modern Culinary Theme */
-    --background: 30 35% 97%;
-    --foreground: 240 15% 20%;
+    /* Savarin Design System - Orangery Inspired Modern Theme */
+    --background: 0 0% 98%;
+    --foreground: 220 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 15% 20%;
+    --card-foreground: 220 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 15% 20%;
+    --popover-foreground: 220 20% 15%;
 
-    /* Primary: Rich Saffron */
-    --primary: 35 95% 58%;
+    /* Primary: Vibrant Coral (Orangery Inspired) */
+    --primary: 12 100% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 35 100% 70%;
+    --primary-glow: 12 100% 72%;
 
-    /* Secondary: Warm Sage */
-    --secondary: 95 25% 85%;
-    --secondary-foreground: 240 15% 20%;
+    /* Secondary: Clean Neutral */
+    --secondary: 220 10% 92%;
+    --secondary-foreground: 220 20% 15%;
 
-    /* Muted: Soft Pearl */
-    --muted: 30 20% 92%;
-    --muted-foreground: 240 8% 50%;
+    /* Muted: Soft Light */
+    --muted: 220 8% 95%;
+    --muted-foreground: 220 10% 40%;
 
-    /* Accent: Deep Terracotta */
-    --accent: 15 75% 45%;
+    /* Accent: Deep Orange */
+    --accent: 20 95% 55%;
     --accent-foreground: 0 0% 100%;
 
     /* Charcoal for headings */
-    --charcoal: 240 20% 15%;
+    --charcoal: 220 25% 12%;
     --charcoal-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 25% 88%;
-    --input: 30 25% 90%;
-    --ring: 35 95% 58%;
+    --border: 220 12% 88%;
+    --input: 220 12% 90%;
+    --ring: 12 100% 62%;
 
-    --radius: 0.875rem;
+    --radius: 1rem;
 
-    /* Enhanced Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(35 95% 58%), hsl(35 100% 70%), hsl(15 75% 45%));
-    --gradient-warm: linear-gradient(180deg, hsl(30 35% 97%), hsl(30 30% 94%));
-    --gradient-subtle: linear-gradient(135deg, hsl(95 25% 85%), hsl(30 20% 92%));
-    --gradient-accent: linear-gradient(45deg, hsl(35 95% 58%), hsl(15 75% 45%));
+    /* Modern Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(12 100% 62%), hsl(12 100% 72%), hsl(20 95% 55%));
+    --gradient-warm: linear-gradient(180deg, hsl(0 0% 98%), hsl(220 8% 95%));
+    --gradient-subtle: linear-gradient(135deg, hsl(220 10% 92%), hsl(220 8% 95%));
+    --gradient-accent: linear-gradient(45deg, hsl(12 100% 62%), hsl(20 95% 55%));
 
     /* Enhanced Shadows */
-    --shadow-warm: 0 12px 35px -8px hsl(35 95% 58% / 0.25);
-    --shadow-elevated: 0 25px 50px -12px hsl(240 20% 15% / 0.15);
-    --shadow-glow: 0 0 50px hsl(35 100% 70% / 0.4);
-    --shadow-soft: 0 4px 20px -2px hsl(240 20% 15% / 0.08);
+    --shadow-warm: 0 12px 35px -8px hsl(12 100% 62% / 0.25);
+    --shadow-elevated: 0 25px 50px -12px hsl(220 25% 12% / 0.15);
+    --shadow-glow: 0 0 50px hsl(12 100% 72% / 0.4);
+    --shadow-soft: 0 4px 20px -2px hsl(220 25% 12% / 0.08);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,55 +74,55 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark Mode - Modern Culinary Theme */
-    --background: 240 15% 8%;
-    --foreground: 30 20% 92%;
+    /* Dark Mode - Orangery Inspired Modern Theme */
+    --background: 220 25% 6%;
+    --foreground: 0 0% 95%;
 
-    --card: 240 12% 10%;
-    --card-foreground: 30 20% 92%;
+    --card: 220 20% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 240 12% 10%;
-    --popover-foreground: 30 20% 92%;
+    --popover: 220 20% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Primary: Bright Saffron */
-    --primary: 35 90% 65%;
-    --primary-foreground: 240 15% 8%;
-    --primary-glow: 35 95% 75%;
+    /* Primary: Bright Coral */
+    --primary: 12 100% 68%;
+    --primary-foreground: 220 25% 6%;
+    --primary-glow: 12 100% 78%;
 
-    /* Secondary: Dark Sage */
-    --secondary: 95 15% 20%;
-    --secondary-foreground: 30 20% 92%;
+    /* Secondary: Dark Neutral */
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 0 0% 95%;
 
-    /* Muted: Dark Pearl */
-    --muted: 240 8% 15%;
-    --muted-foreground: 30 15% 65%;
+    /* Muted: Dark Soft */
+    --muted: 220 12% 12%;
+    --muted-foreground: 220 8% 65%;
 
-    /* Accent: Warm Terracotta */
-    --accent: 15 70% 55%;
-    --accent-foreground: 240 15% 8%;
+    /* Accent: Warm Orange */
+    --accent: 20 95% 60%;
+    --accent-foreground: 220 25% 6%;
 
     /* Charcoal for headings */
-    --charcoal: 30 20% 92%;
-    --charcoal-foreground: 240 15% 8%;
+    --charcoal: 0 0% 95%;
+    --charcoal-foreground: 220 25% 6%;
 
     --destructive: 0 75% 60%;
-    --destructive-foreground: 240 15% 8%;
+    --destructive-foreground: 220 25% 6%;
 
-    --border: 240 8% 18%;
-    --input: 240 8% 15%;
-    --ring: 35 90% 65%;
+    --border: 220 15% 15%;
+    --input: 220 15% 12%;
+    --ring: 12 100% 68%;
 
-    /* Enhanced Dark Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(35 90% 65%), hsl(35 95% 75%), hsl(15 70% 55%));
-    --gradient-warm: linear-gradient(180deg, hsl(240 15% 8%), hsl(240 12% 12%));
-    --gradient-subtle: linear-gradient(135deg, hsl(95 15% 20%), hsl(240 8% 15%));
-    --gradient-accent: linear-gradient(45deg, hsl(35 90% 65%), hsl(15 70% 55%));
+    /* Modern Dark Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(12 100% 68%), hsl(12 100% 78%), hsl(20 95% 60%));
+    --gradient-warm: linear-gradient(180deg, hsl(220 25% 6%), hsl(220 20% 10%));
+    --gradient-subtle: linear-gradient(135deg, hsl(220 15% 18%), hsl(220 12% 12%));
+    --gradient-accent: linear-gradient(45deg, hsl(12 100% 68%), hsl(20 95% 60%));
 
     /* Enhanced Dark Shadows */
-    --shadow-warm: 0 12px 35px -8px hsl(35 90% 65% / 0.3);
-    --shadow-elevated: 0 25px 50px -12px hsl(240 15% 5% / 0.5);
-    --shadow-glow: 0 0 50px hsl(35 95% 75% / 0.2);
-    --shadow-soft: 0 4px 20px -2px hsl(240 15% 5% / 0.3);
+    --shadow-warm: 0 12px 35px -8px hsl(12 100% 68% / 0.3);
+    --shadow-elevated: 0 25px 50px -12px hsl(220 25% 3% / 0.5);
+    --shadow-glow: 0 0 50px hsl(12 100% 78% / 0.2);
+    --shadow-soft: 0 4px 20px -2px hsl(220 25% 3% / 0.3);
 
     --sidebar-background: 240 12% 10%;
     --sidebar-foreground: 30 20% 92%;
