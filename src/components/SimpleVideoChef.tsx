@@ -13,6 +13,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useConversation } from "@11labs/react";
 import chefPortrait from "@/assets/chef-portrait.jpg";
+import chefVideo from "@/assets/chef-video.mp4";
 
 const API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
 
@@ -86,9 +87,13 @@ export const SimpleVideoChef: React.FC = () => {
         <Card className="bg-black border border-gray-800">
           <div className="p-6 text-center">
             <div className="relative w-48 h-48 mx-auto mb-4 rounded-2xl overflow-hidden">
-              <img 
-                src={chefPortrait} 
-                alt="Chef Marco"
+              <video 
+                src={chefVideo}
+                poster={chefPortrait}
+                autoPlay
+                loop
+                muted
+                playsInline
                 className={`w-full h-full object-cover transition-all duration-300 ${
                   isSpeaking ? 'scale-105' : 'scale-100'
                 }`}
