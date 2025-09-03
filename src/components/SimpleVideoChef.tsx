@@ -80,12 +80,35 @@ export const SimpleVideoChef: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <style>{`
+        @keyframes gentle-bob {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-2px) rotate(0.5deg); }
+          50% { transform: translateY(-1px) rotate(0deg); }
+          75% { transform: translateY(-3px) rotate(-0.5deg); }
+        }
+        @keyframes breathing {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        @keyframes chef-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+          50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+      `}</style>
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-4">
         
         {/* Chef Marco */}
         <Card className="bg-black border border-gray-800">
           <div className="p-6 text-center">
-            <div className="relative w-48 h-48 mx-auto mb-4 rounded-2xl overflow-hidden">
+            <div 
+              className={`relative w-48 h-48 mx-auto mb-4 rounded-2xl overflow-hidden transition-all duration-500 ${
+                isConnected ? 'shadow-lg shadow-blue-500/50' : 'shadow-lg shadow-gray-500/30'
+              }`}
+              style={{
+                animation: isConnected ? 'chef-glow 2s ease-in-out infinite' : ''
+              }}
+            >
               {cameraStream ? (
                 <video
                   ref={(video) => {
@@ -104,7 +127,14 @@ export const SimpleVideoChef: React.FC = () => {
                 <img
                   src="/lovable-uploads/e0cbdf41-4b73-4670-9266-ec0136411c15.png"
                   alt="Chef Marco"
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-all duration-1000 ${
+                    isSpeaking ? 'scale-105 animate-pulse' : 'scale-100 animate-bounce'
+                  } hover:scale-110 cursor-pointer`}
+                  style={{
+                    animation: isConnected ? 
+                      'gentle-bob 3s ease-in-out infinite, breathing 4s ease-in-out infinite' : 
+                      'breathing 4s ease-in-out infinite'
+                  }}
                 />
               )}
               {isConnected && (
