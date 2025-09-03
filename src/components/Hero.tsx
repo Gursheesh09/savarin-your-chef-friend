@@ -59,8 +59,8 @@ export const Hero = () => {
           <Button variant="warm" size="xl" className="min-w-48" onClick={handleJoinCookingSessions}>
             Join Live Sessions
           </Button>
-          <Button variant="outline" size="xl" className="min-w-48" onClick={handleTalkWithSavarin}>
-            Learn More
+          <Button variant="outline" size="xl" className="min-w-48" onClick={() => navigate('/about')}>
+            My Story
           </Button>
         </div>
         
