@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useConversation } from "@11labs/react";
-import chefPortrait from "@/assets/chef-portrait.jpg";
+import chefPortrait from "@/assets/chef-marco.png";
 
 const API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
 
@@ -102,7 +102,7 @@ export const SimpleVideoChef: React.FC = () => {
                 />
               ) : (
                 <img
-                  src={chefPortrait}
+                  src="/lovable-uploads/e0cbdf41-4b73-4670-9266-ec0136411c15.png"
                   alt="Chef Marco"
                   className="w-full h-full object-cover"
                 />
