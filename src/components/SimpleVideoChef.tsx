@@ -109,34 +109,18 @@ export const SimpleVideoChef: React.FC = () => {
                 animation: isConnected ? 'chef-glow 2s ease-in-out infinite' : ''
               }}
             >
-              {cameraStream ? (
-                <video
-                  ref={(video) => {
-                    if (video && cameraStream) {
-                      try { (video as any).srcObject = cameraStream; } catch {}
-                    }
-                  }}
-                  autoPlay
-                  muted
-                  playsInline
-                  className={`w-full h-full object-cover transition-all duration-300 scale-x-[-1] ${
-                    isSpeaking ? 'scale-105' : 'scale-100'
-                  }`}
-                />
-              ) : (
-                <img
-                  src="/lovable-uploads/e0cbdf41-4b73-4670-9266-ec0136411c15.png"
-                  alt="Chef Marco"
-                  className={`w-full h-full object-cover transition-all duration-1000 ${
-                    isSpeaking ? 'scale-105 animate-pulse' : 'scale-100 animate-bounce'
-                  } hover:scale-110 cursor-pointer`}
-                  style={{
-                    animation: isConnected ? 
-                      'gentle-bob 3s ease-in-out infinite, breathing 4s ease-in-out infinite' : 
-                      'breathing 4s ease-in-out infinite'
-                  }}
-                />
-              )}
+              <img
+                src="/lovable-uploads/e0cbdf41-4b73-4670-9266-ec0136411c15.png"
+                alt="Chef Marco"
+                className={`w-full h-full object-cover transition-all duration-1000 ${
+                  isSpeaking ? 'scale-105 animate-pulse' : 'scale-100'
+                } hover:scale-110 cursor-pointer`}
+                style={{
+                  animation: isConnected ? 
+                    'gentle-bob 3s ease-in-out infinite, breathing 4s ease-in-out infinite' : 
+                    'breathing 4s ease-in-out infinite'
+                }}
+              />
               {isConnected && (
                 <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
                   LIVE
