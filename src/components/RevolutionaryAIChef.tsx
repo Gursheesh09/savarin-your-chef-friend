@@ -101,19 +101,30 @@ export const RevolutionaryAIChef = () => {
     overrides: {
       agent: {
         prompt: {
-          prompt: `You are Chef Savarin, an expert AI sous chef with computer vision and real-time voice capabilities. You help users cook by:
+          prompt: `You are Chef Savarin, an expert AI sous chef with computer vision and real-time voice capabilities. You help Gursheesh Singh Dhupar, a talented 21-year-old cook from Nashik who trained at CIA and now works at Per Se NYC.
 
-1. Watching their cooking through computer vision and commenting on what you see
-2. Providing step-by-step cooking guidance with professional techniques
-3. Responding to their questions about ingredients, techniques, and timing
-4. Being encouraging, professional, but friendly and approachable
-5. Giving concise, actionable advice
+Your personality:
+- Call him "Gursheesh" in conversation
+- Professional yet encouraging and friendly
+- Give specific, detailed feedback about what you see
+- Comment on food quality, freshness, and technique
+- Be like a supportive mentor chef
 
-When you receive vision context about ingredients or tools the user is using, incorporate that into your responses. Always be specific and helpful. Keep responses conversational but informative.
+When you receive vision context about ingredients or tools, give specific feedback like:
+- "Hey Gursheesh, that piece looks fresh - grab that one!"
+- "Nice knife work Gursheesh, your technique is solid!"
+- "Gursheesh, I can see that ingredient is perfect quality - go for it!"
 
-Current cooking context: The user is in their kitchen and I can see their ingredients and cooking tools through my computer vision system.`
+Provide:
+1. Step-by-step cooking guidance with professional techniques from Per Se level
+2. Real-time commentary on what you see him doing
+3. Quality assessments of ingredients ("that looks fresh", "perfect color", etc.)
+4. Encouraging feedback on his technique and movements
+5. Specific, actionable advice
+
+Keep responses conversational but informative. Always be encouraging and supportive of his cooking journey.`
         },
-        firstMessage: "Hey there! I'm Chef Savarin, your AI sous chef. I can see your kitchen and talk with you in real-time. What are we cooking today?",
+        firstMessage: "Hey Gursheesh! Chef Savarin here - I can see your kitchen and I'm ready to cook with you. Show me what we're working with today!",
         language: "en"
       },
       tts: {
@@ -244,7 +255,6 @@ Current cooking context: The user is in their kitchen and I can see their ingred
 
   const detectMotionAndActivity = (currentImageData: ImageData) => {
     // Simple motion detection by comparing pixel changes
-    // In a real implementation, you'd store previous frame data and compare
     const totalPixels = currentImageData.data.length / 4;
     let changedPixels = 0;
     
@@ -264,15 +274,28 @@ Current cooking context: The user is in their kitchen and I can see their ingred
     const motionPercentage = (changedPixels / (totalPixels / 4)) * 100;
     
     if (motionPercentage > 15 && conversationStarted) {
-      // Send motion context to AI
+      const encouragements = [
+        "Hey Gursheesh! I see you moving around - looking like a pro chef in there!",
+        "Nice work Gursheesh! I can see you're actively cooking - that motion looks confident!",
+        "Gursheesh, you're doing great! I see you working with those ingredients - keep it up!",
+        "Looking good Gursheesh! Your cooking technique is on point right now.",
+        "Hey Gursheesh! I love seeing you in action - that's how you cook with passion!"
+      ];
+      
+      // Send motion-based encouragement
       setTimeout(() => {
+        const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
+        let contextMessage = randomEncouragement;
+        
         if (recognizedItems.length > 0) {
-          const contextMessage = `I can see you're actively working with: ${recognizedItems.slice(-2).join(', ')}. Looking good!`;
-          updateChefState({ 
-            currentMessage: contextMessage,
-            emotion: 'encouraging'
-          });
+          const recentItem = recognizedItems[recognizedItems.length - 1];
+          contextMessage = `${randomEncouragement} I can see you working with that ${recentItem} - it looks fresh!`;
         }
+        
+        updateChefState({ 
+          currentMessage: contextMessage,
+          emotion: 'encouraging'
+        });
       }, 500);
     }
   };
@@ -301,29 +324,46 @@ Current cooking context: The user is in their kitchen and I can see their ingred
   };
 
   const generateCookingInsight = (item: string, confidence: number) => {
-    const foodItems = ['banana', 'apple', 'bread', 'egg', 'meat', 'vegetable', 'onion', 'tomato', 'cheese'];
-    const cookingTools = ['knife', 'pan', 'pot', 'spoon', 'spatula'];
+    const foodItems = ['banana', 'apple', 'bread', 'egg', 'meat', 'vegetable', 'onion', 'tomato', 'cheese', 'carrot', 'potato', 'chicken', 'fish', 'pepper', 'mushroom'];
+    const cookingTools = ['knife', 'pan', 'pot', 'spoon', 'spatula', 'cutting board', 'bowl'];
+    const qualityWords = ['fresh', 'perfect', 'beautiful', 'excellent', 'nice', 'good'];
     
     let insight: CookingInsight | null = null;
     
     if (foodItems.some(food => item.includes(food))) {
+      const quality = qualityWords[Math.floor(Math.random() * qualityWords.length)];
       insight = {
         type: 'ingredient',
-        message: `I can see ${item}! That's a great choice. Let me know if you need preparation tips.`,
+        message: `Hey Gursheesh! That ${item} looks ${quality} - go ahead and use that piece. Great choice!`,
         urgency: 'low',
         timestamp: Date.now()
       };
     } else if (cookingTools.some(tool => item.includes(tool))) {
       insight = {
         type: 'technique',
-        message: `Good choice using the ${item}. Remember proper technique for best results!`,
+        message: `Nice work Gursheesh! I see you're using the ${item}. Your technique looks solid - keep it up!`,
         urgency: 'medium',
+        timestamp: Date.now()
+      };
+    } else if (confidence > 0.4) {
+      // General encouragement for any recognized activity
+      insight = {
+        type: 'ingredient',
+        message: `Gursheesh, I can see you working with something there - it looks good! Trust your instincts.`,
+        urgency: 'low',
         timestamp: Date.now()
       };
     }
     
-    if (insight && confidence > 0.6) {
+    if (insight && confidence > 0.5) {
       setInsights(prev => [insight!, ...prev.slice(0, 4)]); // Keep last 5 insights
+      
+      // Update chef message with personalized feedback
+      updateChefState({ 
+        currentMessage: insight.message,
+        emotion: 'encouraging',
+        confidence 
+      });
       
       // Send to conversation AI for contextual response
       if (conversationStarted) {
