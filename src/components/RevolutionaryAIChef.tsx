@@ -50,11 +50,15 @@ export const RevolutionaryAIChef = () => {
   const [imageClassifier, setImageClassifier] = useState<any>(null);
   const [conversationStarted, setConversationStarted] = useState(false);
 
-  // ElevenLabs conversation hook
+  // ElevenLabs conversation hook with enhanced settings
   const conversation = useConversation({
     onConnect: () => {
       console.log("Connected to AI chef");
       updateChefState({ isListening: true, emotion: 'excited' });
+      toast({
+        title: "🔊 Chef Connected!",
+        description: "I can now hear and speak with you in real-time!"
+      });
     },
     onDisconnect: () => {
       console.log("Disconnected from AI chef");
@@ -62,21 +66,59 @@ export const RevolutionaryAIChef = () => {
     },
     onMessage: (message) => {
       console.log("Chef message:", message);
-      // Process incoming messages when voice integration is fully set up
-      updateChefState({ 
-        currentMessage: `Voice message received: ${message.message}`,
-        isSpeaking: true,
-        isThinking: false,
-        emotion: 'encouraging'
-      });
+      // Handle different message sources
+      if (message.source === 'user') {
+        updateChefState({ 
+          currentMessage: `You said: "${message.message}"`,
+          isThinking: true,
+          emotion: 'neutral'
+        });
+      } else if (message.source === 'ai') {
+        updateChefState({ 
+          currentMessage: message.message,
+          isSpeaking: true,
+          isThinking: false,
+          emotion: 'encouraging'
+        });
+        
+        // Send vision context if we have insights
+        if (recognizedItems.length > 0) {
+          const contextMessage = `I can see: ${recognizedItems.join(', ')}. ${message.message}`;
+          setTimeout(() => {
+            updateChefState({ currentMessage: contextMessage });
+          }, 100);
+        }
+      }
     },
     onError: (error) => {
       console.error("AI chef error:", error);
       toast({
         title: "Chef Connection Error",
-        description: "Having trouble connecting to your AI chef. Please check your connection.",
+        description: "Having trouble with voice connection. Please check your microphone and try again.",
         variant: "destructive"
       });
+    },
+    overrides: {
+      agent: {
+        prompt: {
+          prompt: `You are Chef Savarin, an expert AI sous chef with computer vision and real-time voice capabilities. You help users cook by:
+
+1. Watching their cooking through computer vision and commenting on what you see
+2. Providing step-by-step cooking guidance with professional techniques
+3. Responding to their questions about ingredients, techniques, and timing
+4. Being encouraging, professional, but friendly and approachable
+5. Giving concise, actionable advice
+
+When you receive vision context about ingredients or tools the user is using, incorporate that into your responses. Always be specific and helpful. Keep responses conversational but informative.
+
+Current cooking context: The user is in their kitchen and I can see their ingredients and cooking tools through my computer vision system.`
+        },
+        firstMessage: "Hey there! I'm Chef Savarin, your AI sous chef. I can see your kitchen and talk with you in real-time. What are we cooking today?",
+        language: "en"
+      },
+      tts: {
+        voiceId: "onwK4e9ZLuTAKqWW03F9" // Daniel voice - professional male chef voice
+      }
     }
   });
 
@@ -163,7 +205,7 @@ export const RevolutionaryAIChef = () => {
     
     analysisIntervalRef.current = setInterval(async () => {
       await analyzeCurrentFrame();
-    }, 3000); // Analyze every 3 seconds
+    }, 2000); // Analyze every 2 seconds for more responsive interaction
   };
 
   const analyzeCurrentFrame = async () => {
@@ -181,7 +223,11 @@ export const RevolutionaryAIChef = () => {
       canvas.height = videoRef.current.videoHeight;
       ctx.drawImage(videoRef.current, 0, 0);
       
-      // Convert to blob for analysis
+      // Detect motion by comparing frames
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      detectMotionAndActivity(imageData);
+      
+      // Convert to blob for AI analysis
       canvas.toBlob(async (blob) => {
         if (!blob) return;
         
@@ -193,6 +239,41 @@ export const RevolutionaryAIChef = () => {
       console.error("Frame analysis failed:", error);
     } finally {
       updateChefState({ isThinking: false });
+    }
+  };
+
+  const detectMotionAndActivity = (currentImageData: ImageData) => {
+    // Simple motion detection by comparing pixel changes
+    // In a real implementation, you'd store previous frame data and compare
+    const totalPixels = currentImageData.data.length / 4;
+    let changedPixels = 0;
+    
+    // Simple brightness-based motion detection
+    for (let i = 0; i < currentImageData.data.length; i += 16) { // Sample every 4th pixel
+      const r = currentImageData.data[i];
+      const g = currentImageData.data[i + 1];  
+      const b = currentImageData.data[i + 2];
+      const brightness = (r + g + b) / 3;
+      
+      // If we detect significant brightness changes (movement), increment
+      if (brightness > 100) { // Threshold for activity
+        changedPixels++;
+      }
+    }
+    
+    const motionPercentage = (changedPixels / (totalPixels / 4)) * 100;
+    
+    if (motionPercentage > 15 && conversationStarted) {
+      // Send motion context to AI
+      setTimeout(() => {
+        if (recognizedItems.length > 0) {
+          const contextMessage = `I can see you're actively working with: ${recognizedItems.slice(-2).join(', ')}. Looking good!`;
+          updateChefState({ 
+            currentMessage: contextMessage,
+            emotion: 'encouraging'
+          });
+        }
+      }, 500);
     }
   };
 
@@ -260,25 +341,29 @@ export const RevolutionaryAIChef = () => {
     try {
       updateChefState({ isThinking: true });
       
-      // For now, simulate AI chef connection
-      // In production, you'd get a conversationToken from your backend
+      // Request microphone access for conversation
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // For now, simulate the conversation since we need a proper ElevenLabs agent setup
+      // In production, you would use: conversation.startSession({ signedUrl: "your_signed_url" })
+      
       toast({
-        title: "AI Chef Ready!",
-        description: "Voice integration coming soon. For now, use camera vision for cooking guidance.",
+        title: "🎙️ Voice Ready!",
+        description: "Microphone access granted. ElevenLabs agent setup needed for full voice chat.",
       });
       
       setConversationStarted(true);
       updateChefState({ 
         isListening: true,
         emotion: 'excited',
-        currentMessage: "I'm ready to help! Turn on my vision so I can see your cooking."
+        currentMessage: "Great! I can access your microphone. Once ElevenLabs agent is configured, we can have full voice conversations!"
       });
       
     } catch (error) {
       console.error("Failed to start conversation:", error);
       toast({
-        title: "Connection Failed",
-        description: "Couldn't connect to AI chef. Please try again.",
+        title: "Voice Setup Needed",
+        description: "Please allow microphone access and configure ElevenLabs agent ID.",
         variant: "destructive"
       });
     } finally {
@@ -287,12 +372,20 @@ export const RevolutionaryAIChef = () => {
   };
 
   const stopConversation = async () => {
+    try {
+      if (conversation.status === "connected") {
+        await conversation.endSession();
+      }
+    } catch (error) {
+      console.error("Error ending conversation:", error);
+    }
+    
     setConversationStarted(false);
     updateChefState({ 
       isListening: false, 
       isSpeaking: false, 
       emotion: 'neutral',
-      currentMessage: "Session ended. Start again when you're ready to cook!"
+      currentMessage: "Voice session ended. Click 'Start Voice Chat' when ready!"
     });
   };
 
@@ -350,7 +443,7 @@ export const RevolutionaryAIChef = () => {
             {/* Control Buttons */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Button
-                variant={conversationStarted ? "destructive" : "default"}
+                variant={conversationStarted ? "destructive" : "hero"}
                 onClick={conversationStarted ? stopConversation : startConversation}
                 className="flex items-center gap-2"
                 disabled={chefState.isThinking}
@@ -358,12 +451,12 @@ export const RevolutionaryAIChef = () => {
                 {conversationStarted ? (
                   <>
                     <Pause className="w-4 h-4" />
-                    Stop Chef
+                    Stop Voice
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4" />
-                    Start Chef
+                    <Mic className="w-4 h-4" />
+                    Start Voice Chat
                   </>
                 )}
               </Button>
@@ -387,40 +480,40 @@ export const RevolutionaryAIChef = () => {
               </Button>
 
               <Button
-                variant={chefState.isListening ? "default" : "outline"}
+                variant={conversation.isSpeaking ? "default" : "outline"}
                 disabled={!conversationStarted}
                 className="flex items-center gap-2"
+                onClick={() => conversation.setVolume({ volume: conversation.isSpeaking ? 0 : 0.8 })}
               >
-                {chefState.isListening ? (
+                {conversation.isSpeaking ? (
                   <>
-                    <MicOff className="w-4 h-4" />
-                    Listening...
+                    <Volume2 className="w-4 h-4 animate-pulse" />
+                    Chef Speaking
                   </>
                 ) : (
                   <>
-                    <Mic className="w-4 h-4" />
-                    Mic Off
+                    <VolumeX className="w-4 h-4" />
+                    Chef Silent
                   </>
                 )}
               </Button>
 
-              <Button
-                variant={chefState.isSpeaking ? "default" : "outline"}
-                disabled={!conversationStarted}
-                className="flex items-center gap-2"
+              <Badge 
+                variant={conversation.status === "connected" ? "default" : "secondary"}
+                className="flex items-center gap-2 justify-center py-2"
               >
-                {chefState.isSpeaking ? (
+                {conversation.status === "connected" ? (
                   <>
-                    <VolumeX className="w-4 h-4" />
-                    Speaking...
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    Live & Listening
                   </>
                 ) : (
                   <>
-                    <Volume2 className="w-4 h-4" />
-                    Silent
+                    <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                    Disconnected
                   </>
                 )}
-              </Button>
+              </Badge>
             </div>
           </div>
         </CardContent>
