@@ -9,6 +9,10 @@ export const Footer = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm text-muted-foreground">
+            <a href="/about" className="hover:text-primary transition-colors">
+              Meet the Founder
+            </a>
+            <span className="hidden sm:block">•</span>
             <a href="mailto:contact@savarin.ai" className="hover:text-primary transition-colors">
               contact@savarin.ai
             </a>
