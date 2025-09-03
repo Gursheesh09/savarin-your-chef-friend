@@ -16,8 +16,8 @@ export const Hero = () => {
 
   const handleTalkWithSavarin = () => {
     toast({
-      title: "Chat Demo",
-      description: "Voice chat feature coming soon! For now, explore how Savarin works below.",
+      title: "🚀 Revolutionary AI Chef Available!",
+      description: "Experience the future of cooking with computer vision and real AI guidance.",
     });
     const featuresSection = document.getElementById('core-features');
     if (featuresSection) {
@@ -41,37 +41,38 @@ export const Hero = () => {
       {/* Hero Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <h1 className="text-5xl md:text-7xl font-bold text-charcoal mb-6 leading-tight">
-          An AI sous-chef that{" "}
+          Revolutionary AI chef that{" "}
           <span className="bg-gradient-hero bg-clip-text text-transparent">
-            cooks with you
+            sees & guides you
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-          Plan, prep, and plate—hands-free voice help, mood-based recipes, and on-the-fly substitutions.
+        <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          The world's first AI sous chef with <strong>computer vision</strong> and <strong>real AI intelligence</strong>. 
+          Watches your cooking, recognizes ingredients, and provides expert guidance in real-time.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button variant="hero" size="xl" className="min-w-48" onClick={handleBeginCooking}>
-            Begin Cooking
+            🚀 Try Revolutionary AI
           </Button>
           <Button variant="warm" size="xl" className="min-w-48" onClick={handleJoinCookingSessions}>
             Join Live Sessions
           </Button>
           <Button variant="outline" size="xl" className="min-w-48" onClick={handleTalkWithSavarin}>
-            Talk with Savarin
+            Learn More
           </Button>
         </div>
         
         <p className="text-sm text-muted-foreground">
-          No login needed. Try a 3-minute guided recipe.
+          <strong>Revolutionary Features:</strong> Computer vision • Real AI • Voice interaction • Mobile-first
         </p>
       </div>
       
       {/* Mobile Sticky CTA */}
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
         <Button variant="hero" size="lg" className="shadow-elevated rounded-full" onClick={handleBeginCooking}>
-          Begin Cooking
+          🚀 Try AI Chef
         </Button>
       </div>
     </section>

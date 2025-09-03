@@ -15,7 +15,7 @@ const Index = () => {
       <section className="py-6">
         <div className="container mx-auto px-4 text-center">
           <Button size="lg" onClick={() => navigate('/demo')}>
-            Talk to Chef Savarin
+            🚀 Experience Revolutionary AI Chef
           </Button>
         </div>
       </section>
