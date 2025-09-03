@@ -12,15 +12,25 @@ export const RevolutionaryDemo = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 hover:bg-accent"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 hover:bg-accent"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/about')}
+              className="text-sm"
+            >
+              My Story
+            </Button>
+          </div>
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary animate-pulse" />
             <span className="text-sm font-medium text-primary">Revolutionary AI</span>
