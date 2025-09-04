@@ -78,6 +78,20 @@ export const SimpleVideoChef: React.FC = () => {
     try { await (conversation as any).endSession?.(); } catch {}
   };
 
+  // Speak Chef Marco's responses using browser TTS as a fallback
+  useEffect(() => {
+    if (!currentMessage) return;
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(currentMessage);
+      u.rate = 0.95;
+      u.pitch = 1.02;
+      u.volume = 0.9;
+      window.speechSynthesis.speak(u);
+    }
+  }, [currentMessage]);
+
+
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <style>{`

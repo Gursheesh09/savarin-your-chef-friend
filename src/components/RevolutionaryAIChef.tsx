@@ -389,14 +389,14 @@ Keep responses conversational but informative. Always be encouraging and support
       
       toast({
         title: "🎙️ Voice Ready!",
-        description: "Microphone access granted. ElevenLabs agent setup needed for full voice chat.",
+        description: "Microphone access granted. Voice chat is active (browser voice).",
       });
       
       setConversationStarted(true);
       updateChefState({ 
         isListening: true,
         emotion: 'excited',
-        currentMessage: "Great! I can access your microphone. Once ElevenLabs agent is configured, we can have full voice conversations!"
+        currentMessage: "Great! I can hear you. Let's start cooking—tell me what you're making!"
       });
       
     } catch (error) {
