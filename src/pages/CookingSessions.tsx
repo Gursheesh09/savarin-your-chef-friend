@@ -299,10 +299,15 @@ export const CookingSessions = () => {
               <h1 className="text-3xl font-bold text-charcoal mb-2">Live Cooking Sessions</h1>
               <p className="text-muted-foreground">Join live cooking classes with expert chefs from around the world</p>
             </div>
-            <Button variant="outline" onClick={() => navigate('/')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back Home
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate('/')}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back Home
+              </Button>
+              <Button onClick={() => navigate('/demo')}>
+                🎤 Start Voice Chef
+              </Button>
+            </div>
           </div>
         </div>
       </header>
