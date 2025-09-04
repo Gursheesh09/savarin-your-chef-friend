@@ -260,6 +260,11 @@ export const Demo = () => {
           </p>
         </div>
 
+        {/* Conversational Chef Section */}
+        <div className="mb-8">
+          <ConversationalChef />
+        </div>
+
         {/* Video Chef Section */}
         <div className="mb-8">
           <SimpleVideoChef />
@@ -270,10 +275,6 @@ export const Demo = () => {
           <CookingSession />
         </div>
 
-        {/* Conversational Chef Section */}
-        <div className="mb-8">
-          <ConversationalChef />
-        </div>
 
         
         {!currentRecipe ? (

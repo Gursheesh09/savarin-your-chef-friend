@@ -81,11 +81,12 @@ export const ConversationalChef = () => {
     if (!recognitionRef.current) {
       recognitionRef.current = initSpeechRecognition();
     }
-    
+
     if (!recognitionRef.current) {
+      // If voice isn't supported, keep chat running with text input
       toast({
         title: "Voice not supported",
-        description: "Your browser doesn't support speech recognition.",
+        description: "Your browser doesn't support speech recognition. You can still chat by typing.",
         variant: "destructive",
       });
       return;
@@ -239,7 +240,7 @@ export const ConversationalChef = () => {
           </Button>
           {!isConnected && (
             <p className="text-sm text-muted-foreground mt-2">
-              🎤 Microphone access required for voice chat
+              🎤 Please allow microphone access in your browser prompt to start.
             </p>
           )}
         </div>
@@ -284,7 +285,7 @@ export const ConversationalChef = () => {
             placeholder="Ask Chef Savarin anything about cooking..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && !isProcessing && handleSendMessage()}
+            onKeyDown={(e) => e.key === 'Enter' && !isProcessing && handleSendMessage()}
             disabled={isProcessing}
             className="flex-1"
           />
@@ -323,6 +324,7 @@ export const ConversationalChef = () => {
               if (recognitionRef.current) {
                 recognitionRef.current.stop();
               }
+              window.speechSynthesis.cancel();
             }}
             variant="outline"
             size="sm"
