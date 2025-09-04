@@ -270,6 +270,12 @@ export const Demo = () => {
           <CookingSession />
         </div>
 
+        {/* Conversational Chef Section */}
+        <div className="mb-8">
+          <ConversationalChef />
+        </div>
+
+        
         {!currentRecipe ? (
           <Card className="mb-8">
             <CardHeader>
