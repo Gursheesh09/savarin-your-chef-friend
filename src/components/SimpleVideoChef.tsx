@@ -23,6 +23,7 @@ export const SimpleVideoChef: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [showCamera, setShowCamera] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const { toast } = useToast();
   
   // ElevenLabs conversation
   const conversation = useConversation({
@@ -91,6 +92,22 @@ export const SimpleVideoChef: React.FC = () => {
     }
   }, [currentMessage]);
 
+  const testVoice = () => {
+    try {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance("Hi, I'm Chef Marco. If you can hear me, voice is working.");
+        u.rate = 0.95;
+        u.pitch = 1.02;
+        u.volume = 1;
+        window.speechSynthesis.speak(u);
+      } else {
+        toast({ title: "Voice not available", description: "Your browser doesn't support speech output.", variant: "destructive" });
+      }
+    } catch (e) {
+      toast({ title: "Playback blocked", description: "Click anywhere and try Test Voice again.", variant: "destructive" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -179,7 +196,7 @@ export const SimpleVideoChef: React.FC = () => {
         </Card>
 
         {/* Simple Controls */}
-        <div className="lg:col-span-2 flex justify-center gap-4">
+        <div className="lg:col-span-2 flex justify-center gap-4 flex-wrap">
           {!isConnected ? (
             <Button
               onClick={startCall}
@@ -197,6 +214,10 @@ export const SimpleVideoChef: React.FC = () => {
               End Session
             </Button>
           )}
+
+          <Button onClick={testVoice} variant="outline">
+            Test Voice
+          </Button>
         </div>
       </div>
     </div>
