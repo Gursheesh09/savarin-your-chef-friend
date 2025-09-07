@@ -258,7 +258,7 @@ export const PremiumAIChef: React.FC<PremiumAIChefProps> = ({ onStartConversatio
   const [currentMessage, setCurrentMessage] = useState("");
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [emotion, setEmotion] = useState<'neutral' | 'happy' | 'thinking' | 'explaining' | 'excited'>('neutral');
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(process.env.REACT_APP_OPENAI_API_KEY || "");
   const [showSettings, setShowSettings] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [conversationHistory, setConversationHistory] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
@@ -268,14 +268,16 @@ export const PremiumAIChef: React.FC<PremiumAIChefProps> = ({ onStartConversatio
   const { toast } = useToast();
 
   useEffect(() => {
-    synthRef.current = window.speechSynthesis;
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // synthRef.current = window.speechSynthesis;
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      if (synthRef.current) {
-        synthRef.current.cancel();
-      }
+      // DISABLED AUTO-SPEECH: No more robotic voice
+      // if (synthRef.current) {
+      //   synthRef.current.cancel();
+      // }
     };
   }, []);
 
@@ -391,31 +393,33 @@ export const PremiumAIChef: React.FC<PremiumAIChefProps> = ({ onStartConversatio
       setCurrentMessage(aiResponse);
       setEmotion('explaining');
       
+      // DISABLED AUTO-SPEECH: No more robotic voice
       // Speak the response
-      if (audioEnabled && synthRef.current) {
-        const utterance = new SpeechSynthesisUtterance(aiResponse);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.1;
-        utterance.volume = 0.8;
-        
-        utterance.onstart = () => {
-          setIsSpeaking(true);
-          setEmotion('happy');
-        };
-        
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          setEmotion('neutral');
-          // Auto-restart listening
-          setTimeout(() => {
-            if (isConnected) {
-              startListening();
-            }
-          }, 500);
-        };
-        
-        synthRef.current.speak(utterance);
-      }
+      // if (audioEnabled && synthRef.current) {
+      //   const utterance = new SpeechSynthesisUtterance(aiResponse);
+      //   utterance.rate = 0.9;
+      //   utterance.pitch = 1.1;
+      //   utterance.volume = 0.8;
+      //   
+      //   utterance.onstart = () => {
+      //     setIsSpeaking(true);
+      //     setEmotion('happy');
+      //   };
+      //   
+      //   utterance.onend = () => {
+      //     setIsSpeaking(false);
+      //     setEmotion('neutral');
+      //     // Auto-restart listening
+      //     setTimeout(() => {
+      //       if (isConnected) {
+      //         startListening();
+      //       }
+      //     }, 500);
+      //   };
+      //   
+      //   synthRef.current.speak(utterance);
+      // }
+      console.log('PremiumAIChef speech disabled:', aiResponse);
       
     } catch (error) {
       setIsThinking(false);
@@ -437,23 +441,24 @@ export const PremiumAIChef: React.FC<PremiumAIChefProps> = ({ onStartConversatio
     setEmotion('excited');
     setCurrentMessage("Hello! I'm Chef Marco, your personal culinary AI assistant. I'm excited to cook with you today! What would you like to learn?");
     
+    // DISABLED AUTO-SPEECH: No more robotic voice
     // Welcome speech
-    if (audioEnabled && synthRef.current) {
-      const utterance = new SpeechSynthesisUtterance("Hello! I'm Chef Marco, your personal culinary AI assistant. I'm excited to cook with you today! What would you like to learn?");
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        setEmotion('neutral');
-        setTimeout(() => startListening(), 1000);
-      };
-      
-      synthRef.current.speak(utterance);
-    } else {
+    // if (audioEnabled && synthRef.current) {
+    //   const utterance = new SpeechSynthesisUtterance("Hello! I'm Chef Marco, your personal culinary AI assistant. I'm excited to cook with you today! What would you like to learn?");
+    //   utterance.rate = 0.9;
+    //   utterance.pitch = 1.1;
+    //   
+    //   utterance.onstart = () => setIsSpeaking(true);
+    //   utterance.onend = () => {
+    //     setIsSpeaking(false);
+    //     setEmotion('neutral');
+    //     setTimeout(() => startListening(), 1000);
+    //   };
+    //   
+    //   synthRef.current.speak(utterance);
+    // } else {
       setTimeout(() => startListening(), 2000);
-    }
+    // }
     
     onStartConversation?.();
   };
@@ -470,9 +475,10 @@ export const PremiumAIChef: React.FC<PremiumAIChefProps> = ({ onStartConversatio
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // if (synthRef.current) {
+    //   synthRef.current.cancel();
+    // }
   };
 
   return (

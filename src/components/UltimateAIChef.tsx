@@ -492,7 +492,8 @@ export const UltimateAIChef: React.FC = () => {
 
   // Initialize systems
   useEffect(() => {
-    synthRef.current = window.speechSynthesis;
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // synthRef.current = window.speechSynthesis;
     initializeCamera();
     
     return () => {
@@ -504,9 +505,10 @@ export const UltimateAIChef: React.FC = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // if (synthRef.current) {
+    //   synthRef.current.cancel();
+    // }
     if (cameraStream) {
       cameraStream.getTracks().forEach(track => track.stop());
     }
@@ -660,45 +662,47 @@ export const UltimateAIChef: React.FC = () => {
     }, 2000);
   };
 
+  // DISABLED AUTO-SPEECH: No more robotic voice
   // Premium text-to-speech
   const speakMessage = (message: string) => {
-    if (!audioEnabled) return;
-    
-    if (synthRef.current) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      utterance.volume = 0.8;
-      
-      // Select the best available voice
-      const voices = synthRef.current.getVoices();
-      const preferredVoice = voices.find(voice => 
-        voice.name.includes('Daniel') || 
-        voice.name.includes('Alex') || 
-        voice.lang.includes('en-US')
-      );
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
-      
-      utterance.onstart = () => {
-        setIsSpeaking(true);
-        setEmotion('happy');
-      };
-      
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        setEmotion('neutral');
-        // Auto-restart listening for continuous conversation
-        setTimeout(() => {
-          if (isConnected && !isListening) {
-            startListening();
-          }
-        }, 1000);
-      };
-      
-      synthRef.current.speak(utterance);
-    }
+    // if (!audioEnabled) return;
+    // 
+    // if (synthRef.current) {
+    //   const utterance = new SpeechSynthesisUtterance(message);
+    //   utterance.rate = 0.9;
+    //   utterance.pitch = 1.0;
+    //   utterance.volume = 0.8;
+    //   
+    //   // Select the best available voice
+    //   const voices = synthRef.current.getVoices();
+    //   const preferredVoice = voices.find(voice => 
+    //     voice.name.includes('Daniel') || 
+    //     voice.name.includes('Alex') || 
+    //     voice.lang.includes('en-US')
+    //   );
+    //   if (preferredVoice) {
+    //     utterance.voice = preferredVoice;
+    //   }
+    //   
+    //   utterance.onstart = () => {
+    //     setIsSpeaking(true);
+    //     setEmotion('happy');
+    //   };
+    //   
+    //   utterance.onend = () => {
+    //     setIsSpeaking(false);
+    //     setEmotion('neutral');
+    //     // Auto-restart listening for continuous conversation
+    //     setTimeout(() => {
+    //       if (isConnected && !isListening) {
+    //         startListening();
+    //       }
+    //     }, 1000);
+    //   };
+    //   
+    //   synthRef.current.speak(utterance);
+    // }
+    console.log('UltimateAIChef speech disabled:', message);
   };
 
   const startConversation = () => {

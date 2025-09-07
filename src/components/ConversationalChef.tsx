@@ -190,30 +190,34 @@ export const ConversationalChef = () => {
   };
 
   const speakResponse = async (text: string) => {
+    // DISABLED AUTO-SPEECH: No more robotic voice
     // Use browser speech synthesis for now (ElevenLabs integration ready when needed)
-    if ('speechSynthesis' in window) {
-      // Stop any currently speaking synthesis
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.1;
-      utterance.volume = 0.9;
-      
-      // Make it sound more chef-like
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(voice => 
-        voice.name.includes('Google') || 
-        voice.name.includes('Microsoft') ||
-        voice.lang.startsWith('en')
-      );
-      
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
-      
-      window.speechSynthesis.speak(utterance);
-    }
+    // if ('speechSynthesis' in window) {
+    //   // Stop any currently speaking synthesis
+    //   window.speechSynthesis.cancel();
+    //   
+    //   const utterance = new SpeechSynthesisUtterance(text);
+    //   utterance.rate = 0.9;
+    //   utterance.pitch = 1.1;
+    //   utterance.volume = 0.9;
+    //   
+    //   // Make it sound more chef-like
+    //   const voices = window.speechSynthesis.getVoices();
+    //   const preferredVoice = voices.find(voice => 
+    //     voice.name.includes('Google') || 
+    //     voice.name.includes('Microsoft') ||
+    //     voice.lang.startsWith('en')
+    //   );
+    //   
+    //   if (preferredVoice) {
+    //     utterance.voice = preferredVoice;
+    //   }
+    //   
+    //   window.speechSynthesis.speak(utterance);
+    // }
+    
+    // Just log the response instead of speaking
+    console.log('Chef response (speech disabled):', text);
   };
 
   return (

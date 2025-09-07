@@ -47,7 +47,8 @@ export const RealisticVideoChef: React.FC<RealisticVideoChefProps> = () => {
   };
 
   useEffect(() => {
-    synthRef.current = window.speechSynthesis;
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // synthRef.current = window.speechSynthesis;
     startVideoAnimation();
     
     return () => {
@@ -62,9 +63,10 @@ export const RealisticVideoChef: React.FC<RealisticVideoChefProps> = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // if (synthRef.current) {
+    //   synthRef.current.cancel();
+    // }
   };
 
   // Create realistic video animation
@@ -347,41 +349,43 @@ export const RealisticVideoChef: React.FC<RealisticVideoChefProps> = () => {
   };
 
   const speakMessage = (message: string) => {
-    if (!audioEnabled || !synthRef.current) return;
-    
-    const utterance = new SpeechSynthesisUtterance(message);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.8;
-    
-    // Select best voice
-    const voices = synthRef.current.getVoices();
-    const preferredVoice = voices.find(voice => 
-      voice.name.includes('Daniel') || 
-      voice.name.includes('Alex') || 
-      voice.lang.includes('en-US')
-    );
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-    
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-      setChefEmotion('speaking');
-    };
-    
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      setChefEmotion('neutral');
-      // Auto-restart listening
-      setTimeout(() => {
-        if (isConnected) {
-          startListening();
-        }
-      }, 1000);
-    };
-    
-    synthRef.current.speak(utterance);
+    // DISABLED AUTO-SPEECH: No more robotic voice
+    // if (!audioEnabled || !synthRef.current) return;
+    // 
+    // const utterance = new SpeechSynthesisUtterance(message);
+    // utterance.rate = 0.9;
+    // utterance.pitch = 1.0;
+    // utterance.volume = 0.8;
+    // 
+    // // Select best voice
+    // const voices = synthRef.current.getVoices();
+    // const preferredVoice = voices.find(voice => 
+    //   voice.name.includes('Daniel') || 
+    //   voice.name.includes('Alex') || 
+    //   voice.lang.includes('en-US')
+    // );
+    // if (preferredVoice) {
+    //   utterance.voice = preferredVoice;
+    // }
+    // 
+    // utterance.onstart = () => {
+    //   setIsSpeaking(true);
+    //   setChefEmotion('speaking');
+    // };
+    // 
+    // utterance.onend = () => {
+    //   setIsSpeaking(false);
+    //   setChefEmotion('neutral');
+    //   // Auto-restart listening
+    //   setTimeout(() => {
+    //     if (isConnected) {
+    //       startListening();
+    //     }
+    //   }, 1000);
+    // };
+    // 
+    // synthRef.current.speak(utterance);
+    console.log('RealisticVideoChef speech disabled:', message);
   };
 
   const startConversation = () => {

@@ -129,10 +129,10 @@ export const CookingSessions = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Beginner": return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300";
-      case "Intermediate": return "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300";
-      case "Advanced": return "bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300";
-      default: return "bg-muted text-muted-foreground";
+      case "Beginner": return "bg-green-100 text-green-700";
+      case "Intermediate": return "bg-yellow-100 text-yellow-700";
+      case "Advanced": return "bg-red-100 text-red-700";
+      default: return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -146,19 +146,19 @@ export const CookingSessions = () => {
 
   if (activeSession) {
     return (
-      <div className="min-h-screen bg-gradient-subtle">
+      <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-6 py-4">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <Button variant="outline" onClick={leaveSession}>
+                <Button variant="outline" onClick={leaveSession} className="border-gray-300 text-gray-600 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Leave Session
                 </Button>
                 <div>
-                  <h1 className="text-xl font-semibold text-charcoal">{activeSession.title}</h1>
-                  <p className="text-sm text-muted-foreground">with {activeSession.host.name}</p>
+                  <h1 className="text-xl font-semibold text-gray-900">{activeSession.title}</h1>
+                  <p className="text-sm text-gray-600">with {activeSession.host.name}</p>
                 </div>
               </div>
               <Badge className={getDifficultyColor(activeSession.difficulty)}>
@@ -169,11 +169,11 @@ export const CookingSessions = () => {
         </header>
 
         {/* Active Session Interface */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Video/Recipe Area */}
             <div className="lg:col-span-2">
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -182,8 +182,8 @@ export const CookingSessions = () => {
                         <AvatarFallback>{activeSession.host.name[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <CardTitle className="text-lg">{activeSession.host.name}</CardTitle>
-                        <CardDescription>{activeSession.host.level}</CardDescription>
+                        <CardTitle className="text-lg text-gray-900">{activeSession.host.name}</CardTitle>
+                        <CardDescription className="text-gray-600">{activeSession.host.level}</CardDescription>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -192,7 +192,7 @@ export const CookingSessions = () => {
                           🔴 LIVE
                         </Badge>
                       )}
-                      <div className="flex items-center text-sm text-muted-foreground">
+                      <div className="flex items-center text-sm text-gray-600">
                         <Users className="w-4 h-4 mr-1" />
                         {activeSession.participants}
                       </div>
@@ -200,85 +200,52 @@ export const CookingSessions = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {/* Mock Video Player */}
-                  <div className="aspect-video bg-gradient-hero rounded-lg flex items-center justify-center mb-4">
-                    <div className="text-center text-primary-foreground">
-                      <Play className="w-16 h-16 mx-auto mb-2 opacity-75" />
-                      <p className="text-lg font-medium">Live Cooking Stream</p>
-                      <p className="text-sm opacity-75">Making {activeSession.recipe}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Session Info */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div>
-                      <Clock className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-                      <p className="text-sm font-medium">{activeSession.duration}</p>
-                      <p className="text-xs text-muted-foreground">Duration</p>
-                    </div>
-                    <div>
-                      <Globe className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-                      <p className="text-sm font-medium">{activeSession.cuisine}</p>
-                      <p className="text-xs text-muted-foreground">Cuisine</p>
-                    </div>
-                    <div>
-                      <ChefHat className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-                      <p className="text-sm font-medium">{activeSession.difficulty}</p>
-                      <p className="text-xs text-muted-foreground">Level</p>
-                    </div>
-                    <div>
-                      <Users className="w-5 h-5 mx-auto mb-1 text-muted-foreground" />
-                      <p className="text-sm font-medium">{activeSession.participants}/{activeSession.maxParticipants}</p>
-                      <p className="text-xs text-muted-foreground">Cooks</p>
-                    </div>
+                  <div className="bg-gray-100 rounded-lg p-8 text-center">
+                    <ChefHat className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Cooking Session</h3>
+                    <p className="text-gray-600">Join the live cooking session with {activeSession.host.name}</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Chat Area */}
-            <div className="lg:col-span-1">
-              <Card className="h-[600px] flex flex-col">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5" />
-                    Live Chat
-                  </CardTitle>
+            <div className="space-y-4">
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-lg text-gray-900">Live Chat</CardTitle>
                 </CardHeader>
-                
-                <CardContent className="flex-1 flex flex-col p-0">
-                  <ScrollArea className="flex-1 px-6">
-                    <div className="space-y-4">
-                      {chatMessages.map((msg) => (
-                        <div key={msg.id} className="flex flex-col space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-charcoal">
-                              {getMessageTypeIcon(msg.type)} {msg.sender}
-                            </span>
-                            <span className="text-xs text-muted-foreground">{msg.timestamp}</span>
+                <CardContent>
+                  <ScrollArea className="h-64 mb-4">
+                    <div className="space-y-3">
+                      {chatMessages.map((message) => (
+                        <div key={message.id} className="flex items-start gap-2">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-sm font-medium text-gray-900">{message.sender}</span>
+                              <span className="text-xs text-gray-500">{message.timestamp}</span>
+                              {message.type !== "message" && (
+                                <span className="text-xs">{getMessageTypeIcon(message.type)}</span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-700">{message.message}</p>
                           </div>
-                          <p className={`text-sm ${msg.type === 'tip' ? 'text-primary' : msg.type === 'timing' ? 'text-amber-600' : 'text-muted-foreground'}`}>
-                            {msg.message}
-                          </p>
                         </div>
                       ))}
                     </div>
                   </ScrollArea>
                   
-                  <Separator />
-                  
-                  <div className="p-4">
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Ask a question or share a tip..."
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                      />
-                      <Button onClick={sendMessage} size="sm">
-                        <Send className="w-4 h-4" />
-                      </Button>
-                    </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-1 border-gray-300"
+                      onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    />
+                    <Button onClick={sendMessage} size="sm" className="bg-orange-500 hover:bg-orange-600">
+                      <Send className="w-4 h-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -289,46 +256,39 @@ export const CookingSessions = () => {
     );
   }
 
+  // Main Sessions List
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-charcoal mb-2">Live Cooking Sessions</h1>
-              <p className="text-muted-foreground">Join live cooking classes with expert chefs from around the world</p>
+              <h1 className="text-3xl font-bold text-gray-900">Live Cooking Sessions</h1>
+              <p className="text-gray-600">Join live cooking classes with professional chefs</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate('/')}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back Home
-              </Button>
-              <Button onClick={() => navigate('/demo')}>
-                🎤 Start Voice Chef
-              </Button>
-            </div>
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
           </div>
         </div>
       </header>
 
       {/* Sessions Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mockSessions.map((session) => (
-            <Card key={session.id} className="group hover:shadow-glow transition-all duration-300">
+            <Card key={session.id} className="border-0 shadow-sm hover:shadow-md transition-all duration-300">
               <CardHeader>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarImage src={session.host.avatar} />
-                      <AvatarFallback>{session.host.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium text-charcoal">{session.host.name}</p>
-                      <p className="text-xs text-muted-foreground">{session.host.level}</p>
-                    </div>
-                  </div>
+                <div className="flex items-start justify-between mb-3">
+                  <Badge className={getDifficultyColor(session.difficulty)}>
+                    {session.difficulty}
+                  </Badge>
                   {session.isLive && (
                     <Badge variant="destructive" className="animate-pulse">
                       🔴 LIVE
@@ -336,80 +296,51 @@ export const CookingSessions = () => {
                   )}
                 </div>
                 
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                  {session.title}
-                </CardTitle>
-                <CardDescription>{session.description}</CardDescription>
+                <CardTitle className="text-lg text-gray-900 mb-2">{session.title}</CardTitle>
+                <CardDescription className="text-gray-600 mb-3">{session.description}</CardDescription>
+                
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {session.duration}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Globe className="w-4 h-4" />
+                    {session.cuisine}
+                  </div>
+                </div>
               </CardHeader>
               
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span>{session.startTime}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4 text-muted-foreground" />
-                        <span>{session.participants}/{session.maxParticipants}</span>
-                      </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={session.host.avatar} />
+                      <AvatarFallback>{session.host.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{session.host.name}</p>
+                      <p className="text-xs text-gray-500">{session.host.level}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <Badge className={getDifficultyColor(session.difficulty)}>
-                        {session.difficulty}
-                      </Badge>
-                      <Badge variant="outline">{session.cuisine}</Badge>
-                    </div>
-                    <span className="text-sm text-muted-foreground">{session.duration}</span>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-gray-900">{session.startTime}</p>
+                    <p className="text-xs text-gray-500">
+                      {session.participants}/{session.maxParticipants} participants
+                    </p>
                   </div>
-                  
-                  <Button 
-                    className="w-full" 
-                    variant={session.isLive ? "default" : "outline"}
-                    onClick={() => joinSession(session)}
-                    disabled={session.participants >= session.maxParticipants}
-                  >
-                    {session.participants >= session.maxParticipants ? 'Session Full' : 
-                     session.isLive ? 'Join Live Session' : 'Join When Live'}
-                  </Button>
                 </div>
+                
+                <Button 
+                  onClick={() => joinSession(session)}
+                  className="w-full bg-orange-500 hover:bg-orange-600"
+                >
+                  Join Session
+                </Button>
               </CardContent>
             </Card>
           ))}
-        </div>
-        
-        {/* Community Stats */}
-        <div className="mt-12">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle>Community Cooking Stats</CardTitle>
-              <CardDescription>Join thousands of passionate home cooks learning together</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div>
-                  <p className="text-3xl font-bold text-primary">2,547</p>
-                  <p className="text-sm text-muted-foreground">Active Cooks Today</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">18</p>
-                  <p className="text-sm text-muted-foreground">Live Sessions Now</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">156</p>
-                  <p className="text-sm text-muted-foreground">Recipes Mastered</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">4.9</p>
-                  <p className="text-sm text-muted-foreground">Average Rating</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

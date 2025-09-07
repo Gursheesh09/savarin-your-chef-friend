@@ -98,328 +98,276 @@ export const Demo = () => {
         "Preheat oven to 400°F (200°C)",
         "Pat salmon dry, season both sides",
         "Heat olive oil in oven-safe pan",
-        "Sear salmon skin-side up, 3 minutes",
+        "Sear salmon skin-side down for 2 minutes",
         "Flip, add lemon slices and dill",
-        "Transfer to oven for 8-10 minutes",
-        "Rest for 2 minutes before serving"
+        "Transfer to oven, bake 8-10 minutes",
+        "Rest 5 minutes before serving"
       ],
-      cookTime: "18 mins", 
-      difficulty: "Medium"
+      cookTime: "20 mins",
+      difficulty: "Easy"
     },
     quick: {
-      name: "Stir-Fried Vegetables",
-      ingredients: ["mixed vegetables", "2 tbsp soy sauce", "1 tbsp sesame oil", "2 cloves garlic", "1 tsp ginger"],
+      name: "5-Minute Quesadilla",
+      ingredients: ["2 tortillas", "1 cup shredded cheese", "1/4 cup beans", "2 tbsp salsa", "1 tbsp oil"],
       steps: [
-        "Heat oil in wok over high heat",
-        "Add garlic and ginger, stir 30 seconds",
-        "Add hard vegetables first (carrots, broccoli)",
-        "Stir-fry 2-3 minutes",
-        "Add softer vegetables (peppers, snap peas)",
-        "Add soy sauce, toss everything together",
-        "Serve immediately while crisp"
+        "Heat oil in pan over medium heat",
+        "Place one tortilla in pan",
+        "Sprinkle half the cheese",
+        "Add beans and salsa",
+        "Top with second tortilla",
+        "Cook 2-3 minutes each side until golden",
+        "Cut and serve hot"
       ],
-      cookTime: "8 mins",
+      cookTime: "5 mins",
       difficulty: "Easy"
     }
   };
 
-  const handleMoodSubmit = () => {
-    const mood = currentMood.toLowerCase();
-    let selectedRecipe: Recipe;
-
-    if (mood.includes('comfort') || mood.includes('cozy') || mood.includes('warm')) {
-      selectedRecipe = recipes.comfort;
-    } else if (mood.includes('light') || mood.includes('healthy') || mood.includes('fresh')) {
-      selectedRecipe = recipes.light;
-    } else if (mood.includes('quick') || mood.includes('fast') || mood.includes('busy')) {
-      selectedRecipe = recipes.quick;
-    } else {
-      selectedRecipe = recipes.comfort; // default
-    }
-
-    setCurrentRecipe(selectedRecipe);
-    setCurrentStep(0);
+  const handleVoiceCommand = (command: string) => {
+    if (command.includes('comfort') || command.includes('cozy')) {
+      setCurrentMood('comfort');
+      setCurrentRecipe(recipes.comfort);
+    } else if (command.includes('light') || command.includes('healthy')) {
+      setCurrentMood('light');
+      setCurrentRecipe(recipes.light);
+    } else if (command.includes('quick') || command.includes('fast')) {
+      setCurrentMood('quick');
+      setCurrentRecipe(recipes.quick);
+    } else if (command.includes('next') || command.includes('step')) {
+      if (currentRecipe && currentStep < currentRecipe.steps.length - 1) {
+        setCurrentStep(currentStep + 1);
     toast({
-      title: "Recipe matched!",
-      description: `Based on your mood, I've selected: ${selectedRecipe.name}`,
-    });
-  };
-
-  const handleVoiceCommand = (transcript: string) => {
-    console.log('Voice command received:', transcript);
-    
-    const responses: Record<string, string> = {
-      'next step': "Moving to the next step!",
-      'previous step': "Going back to the previous step!",
-      'repeat': currentRecipe ? currentRecipe.steps[currentStep] : "Please select a recipe first",
-      'help': "You can say: 'next step', 'previous step', 'repeat', 'how long', or ask about techniques",
-      'how long': currentRecipe ? `This recipe takes ${currentRecipe.cookTime} total` : "Please select a recipe first",
-      'what temperature': "For this step, use medium heat. Adjust as needed based on your stove.",
-      'is it ready': "Look for the visual and aromatic cues mentioned in the current step",
-      'substitute': "You can substitute most herbs with dried versions using 1/3 the amount"
-    };
-
-    // Handle navigation commands
-    if (transcript.includes('next') && currentRecipe && currentStep < currentRecipe.steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-      speakText("Moving to the next step");
-      return;
-    }
-    
-    if (transcript.includes('previous') && currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-      speakText("Going back to the previous step");
-      return;
-    }
-
-    // Find matching response
-    const matchedKey = Object.keys(responses).find(key => 
-      transcript.includes(key.replace(' ', '')) || transcript.includes(key)
-    );
-    
-    const response = matchedKey ? responses[matchedKey] : 
-      "I didn't catch that. Try saying 'help' to see what I can do, or ask about cooking techniques!";
-    
-    speakText(response);
+          title: "Next step!",
+          description: `Step ${currentStep + 2}: ${currentRecipe.steps[currentStep + 1]}`,
+        });
+      }
+    } else if (command.includes('repeat') || command.includes('again')) {
     toast({
-      title: "Savarin says:",
-      description: response,
-    });
-  };
-
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      utterance.volume = 0.8;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-
-  const handleVoiceToggle = () => {
-    if (!recognition) {
-      toast({
-        title: "Voice not supported",
-        description: "Your browser doesn't support speech recognition. Try Chrome or Edge.",
-        variant: "destructive",
+        title: "Repeating step",
+        description: currentRecipe ? currentRecipe.steps[currentStep] : "No recipe loaded",
       });
-      return;
     }
+  };
 
-    if (isListening) {
+  const toggleVoiceMode = () => {
+    setIsVoiceMode(!isVoiceMode);
+    if (!isVoiceMode) {
+      toast({
+        title: "Voice mode enabled",
+        description: "You can now speak commands like 'next step' or 'repeat'",
+      });
+    }
+  };
+
+  const startListening = () => {
+    if (recognition) {
+      recognition.start();
+      setIsListening(true);
+      toast({
+        title: "Listening...",
+        description: "Speak your cooking mood or command",
+      });
+    }
+  };
+
+  const stopListening = () => {
+    if (recognition) {
       recognition.stop();
       setIsListening(false);
-    } else {
-      setIsListening(true);
-      recognition.start();
-      toast({
-        title: "Voice mode activated",
-        description: "Listening... Try saying 'help' to see what I can do!",
-      });
     }
   };
 
-  const nextStep = () => {
-    if (currentRecipe && currentStep < currentRecipe.steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+  const handleMoodSelection = (mood: string) => {
+    setCurrentMood(mood);
+    setCurrentRecipe(recipes[mood as keyof typeof recipes]);
+    setCurrentStep(0);
+    toast({
+      title: "Recipe selected!",
+      description: `Let's make ${recipes[mood as keyof typeof recipes].name}`,
+    });
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Navigation Header */}
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Header */}
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-light text-gray-900 tracking-tight">AI Chef Demo</h1>
+            <p className="text-gray-600">Experience how AI can help you cook better</p>
+          </div>
           <Button
             variant="ghost"
-            size="sm"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 hover:bg-accent"
+            className="text-gray-600 hover:text-gray-900 hover:bg-white/50 backdrop-blur-sm rounded-xl"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
-          <Badge variant="outline" className="text-xs">
-            Live Demo
-          </Badge>
         </div>
-        
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-charcoal mb-4">
-            Savarin AI Demo
-          </h1>
-          <p className="text-muted-foreground">
-            Experience AI-powered cooking with your virtual sous chef
-          </p>
-        </div>
+      </div>
 
-        {/* Conversational Chef Section */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        {/* Mood Selection */}
+        {!currentRecipe && (
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">What's your cooking mood today?</h2>
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <Card 
+                className="bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl hover:bg-white/80 transition-all duration-500 transform hover:scale-105 cursor-pointer"
+                onClick={() => handleMoodSelection('comfort')}
+              >
+                <CardContent className="p-6 text-center">
+                  <ChefHat className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Comfort Food</h3>
+                  <p className="text-gray-600">Warm, hearty dishes for cozy days</p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl hover:bg-white/80 transition-all duration-500 transform hover:scale-105 cursor-pointer"
+                onClick={() => handleMoodSelection('light')}
+              >
+                <CardContent className="p-6 text-center">
+                  <Clock className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Light & Fresh</h3>
+                  <p className="text-gray-600">Healthy, vibrant meals</p>
+                </CardContent>
+              </Card>
+
+              <Card 
+                className="bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg hover:shadow-2xl hover:bg-white/80 transition-all duration-500 transform hover:scale-105 cursor-pointer"
+                onClick={() => handleMoodSelection('quick')}
+              >
+                <CardContent className="p-6 text-center">
+                  <Mic className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick & Easy</h3>
+                  <p className="text-gray-600">Fast meals for busy days</p>
+                </CardContent>
+              </Card>
+        </div>
+        </div>
+        )}
+
+        {/* Voice Controls */}
         <div className="mb-8">
-          <ConversationalChef />
+          <Card className="bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Voice Commands</h3>
+                  <p className="text-gray-600">Try saying: "comfort food", "next step", or "repeat"</p>
         </div>
-
-        {/* Video Chef Section */}
-        <div className="mb-8">
-          <SimpleVideoChef />
-        </div>
-
-        {/* Cooking Session Section */}
-        <div className="mb-8">
-          <CookingSession />
-        </div>
-
-
-        
-        {!currentRecipe ? (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ChefHat className="w-5 h-5" />
-                Tell me your mood
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Input
-                  placeholder="e.g., I want something comforting and warm..."
-                  value={currentMood}
-                  onChange={(e) => setCurrentMood(e.target.value)}
-                  className="text-lg"
-                />
-                <div className="flex gap-2 flex-wrap">
-                  <Badge 
-                    variant="outline" 
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                    onClick={() => setCurrentMood("something comforting")}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={toggleVoiceMode}
+                    variant={isVoiceMode ? "default" : "outline"}
+                    className={isVoiceMode ? "bg-gray-900 hover:bg-gray-800" : "border-gray-300 bg-white/50 backdrop-blur-sm"}
                   >
-                    Comforting
-                  </Badge>
-                  <Badge 
-                    variant="outline"
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                    onClick={() => setCurrentMood("light and healthy")}
-                  >
-                    Light & Fresh
-                  </Badge>
-                  <Badge 
-                    variant="outline"
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
-                    onClick={() => setCurrentMood("quick and easy")}
-                  >
-                    Quick & Easy
-                  </Badge>
+                    {isVoiceMode ? "Voice On" : "Voice Off"}
+                  </Button>
+                  {isVoiceMode && (
+                    <Button
+                      onClick={isListening ? stopListening : startListening}
+                      className={isListening ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-900 hover:bg-gray-800"}
+                    >
+                      {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                      {isListening ? "Stop" : "Listen"}
+                    </Button>
+                  )}
                 </div>
-                <Button 
-                  onClick={handleMoodSubmit} 
-                  className="w-full"
-                  disabled={!currentMood.trim()}
-                >
-                  Find My Recipe
-                </Button>
               </div>
             </CardContent>
           </Card>
-        ) : (
-          <div className="space-y-6">
-            {/* Recipe Header */}
-            <Card>
+        </div>
+
+        {/* Recipe Display */}
+        {currentRecipe && (
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Recipe Info */}
+            <Card className="border-0 shadow-sm">
               <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-2xl">{currentRecipe.name}</CardTitle>
-                    <div className="flex gap-4 mt-2">
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">{currentRecipe.name}</h2>
+                  <Badge className="bg-orange-100 text-orange-700">{currentRecipe.difficulty}</Badge>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
                         {currentRecipe.cookTime}
-                      </Badge>
-                      <Badge variant="outline">
-                        {currentRecipe.difficulty}
-                      </Badge>
                     </div>
+                  <div className="flex items-center gap-1">
+                    <ChefHat className="w-4 h-4" />
+                    {currentRecipe.steps.length} steps
                   </div>
-                  <Button
-                    variant={isListening ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={handleVoiceToggle}
-                    className="flex items-center gap-2"
-                  >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                    {isListening ? "Listening..." : "Voice Help"}
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  {/* Ingredients */}
                   <div>
-                    <h3 className="font-semibold mb-2">Ingredients:</h3>
-                    <ul className="space-y-1">
-                      {currentRecipe.ingredients.map((ingredient, idx) => (
-                        <li key={idx} className="text-sm text-muted-foreground">
-                          • {ingredient}
-                        </li>
+                    <h3 className="font-semibold text-gray-900 mb-3">Ingredients</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {currentRecipe.ingredients.map((ingredient, index) => (
+                        <div key={index} className="text-sm text-gray-600">• {ingredient}</div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Current Step */}
-            <Card className="border-primary">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Step {currentStep + 1} of {currentRecipe.steps.length}</span>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-3">
+                      Step {currentStep + 1} of {currentRecipe.steps.length}
+                    </h3>
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <p className="text-gray-800">{currentRecipe.steps[currentStep]}</p>
+                    </div>
+                  </div>
+
+                  {/* Step Navigation */}
                   <div className="flex gap-2">
                     <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={prevStep}
+                      onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                       disabled={currentStep === 0}
+                      variant="outline"
+                      className="border-gray-300 text-gray-600 hover:bg-gray-50"
                     >
                       Previous
                     </Button>
                     <Button 
-                      size="sm" 
-                      onClick={nextStep}
+                      onClick={() => setCurrentStep(Math.min(currentRecipe.steps.length - 1, currentStep + 1))}
                       disabled={currentStep === currentRecipe.steps.length - 1}
+                      className="bg-orange-500 hover:bg-orange-600"
                     >
-                      {currentStep === currentRecipe.steps.length - 1 ? "Finished!" : "Next Step"}
+                      Next
                     </Button>
                   </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg leading-relaxed">
-                  {currentRecipe.steps[currentStep]}
-                </p>
-                <div className="mt-4 p-4 bg-accent/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    💡 Pro tip: Use voice help to ask questions like "How do I know when it's ready?" or "What temperature should I use?"
-                  </p>
                 </div>
               </CardContent>
             </Card>
 
+            {/* AI Chef Interface */}
+            <div className="space-y-6">
+              <ConversationalChef />
+              <SimpleVideoChef />
+            </div>
+          </div>
+        )}
+
             {/* Reset Button */}
-            <div className="text-center">
+        {currentRecipe && (
+          <div className="text-center mt-8">
               <Button 
-                variant="outline" 
                 onClick={() => {
                   setCurrentRecipe(null);
+                setCurrentStep(0);
                   setCurrentMood("");
-                  setCurrentStep(0);
                 }}
+              variant="outline"
+              className="border-gray-300 text-gray-600 hover:bg-gray-50"
               >
-                Try Another Recipe
+              Start Over
               </Button>
-            </div>
           </div>
         )}
       </div>

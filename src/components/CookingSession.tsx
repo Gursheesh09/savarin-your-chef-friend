@@ -267,23 +267,25 @@ export const CookingSession = () => {
     setTimeout(() => {
       setIsThinking(false);
       
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(farewell);
-        utterance.rate = 0.9;
-        setIsSpeaking(true);
+      // DISABLED AUTO-SPEECH: No more robotic voice
+      // if ('speechSynthesis' in window) {
+      //   const utterance = new SpeechSynthesisUtterance(farewell);
+      //   utterance.rate = 0.9;
+      //   setIsSpeaking(true);
+      //   setChefMessage(farewell);
+      //   utterance.onend = () => {
+      //     setIsSpeaking(false);
+      //     setSelectedRecipe(null);
+      //     setSessionTime(0);
+      //     setEmotionalState('neutral');
+      //   };
+      //   window.speechSynthesis.speak(utterance);
+      // } else {
         setChefMessage(farewell);
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          setSelectedRecipe(null);
-          setSessionTime(0);
-          setEmotionalState('neutral');
-        };
-        window.speechSynthesis.speak(utterance);
-      } else {
         setSelectedRecipe(null);
         setSessionTime(0);
         setEmotionalState('neutral');
-      }
+      // }
     }, 1000);
     
     toast({
@@ -302,21 +304,26 @@ export const CookingSession = () => {
       setTimeout(() => {
         setIsThinking(false);
         
+        // DISABLED AUTO-SPEECH: No more robotic voice for instructions
         // Speak the next step
-        if ('speechSynthesis' in window) {
-          const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
-          const utterance = new SpeechSynthesisUtterance(instruction);
-          utterance.rate = 0.9;
-          
-          setIsSpeaking(true);
-          setChefMessage(instruction);
-          utterance.onend = () => {
-            setIsSpeaking(false);
-            setEmotionalState('neutral');
-          };
-          
-          window.speechSynthesis.speak(utterance);
-        }
+        // if ('speechSynthesis' in window) {
+        //   const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
+        //   const utterance = new SpeechSynthesisUtterance(instruction);
+        //   utterance.rate = 0.9;
+        //   
+        //   setIsSpeaking(true);
+        //   setChefMessage(instruction);
+        //   utterance.onend = () => {
+        //     setIsSpeaking(false);
+        //     setEmotionalState('neutral');
+        //   };
+        //   
+        //   window.speechSynthesis.speak(utterance);
+        // }
+        
+        // Just show the message without speaking
+        const instruction = `Step ${currentStep + 2}: ${nextStepData.instruction}. ${nextStepData.culturalTip || ''}`;
+        setChefMessage(instruction);
         
         toast({
           title: `Step ${currentStep + 2}`,
@@ -424,19 +431,23 @@ export const CookingSession = () => {
 
       setEmotionalState(responseEmotionalState);
 
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(response);
-        utterance.rate = 0.9;
-        
-        setIsSpeaking(true);
-        setChefMessage(response);
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          setEmotionalState('neutral');
-        };
-        
-        window.speechSynthesis.speak(utterance);
-      }
+      // DISABLED AUTO-SPEECH: No more robotic voice for responses
+      // if ('speechSynthesis' in window) {
+      //   const utterance = new SpeechSynthesisUtterance(response);
+      //   utterance.rate = 0.9;
+      //   
+      //   setIsSpeaking(true);
+      //   setChefMessage(response);
+      //   utterance.onend = () => {
+      //     setIsSpeaking(false);
+      //     setEmotionalState('neutral');
+      //   };
+      //   
+      //   window.speechSynthesis.speak(utterance);
+      // }
+      
+      // Just show the message without speaking
+      setChefMessage(response);
 
       toast({
         title: "Your Chef Cares 💖",

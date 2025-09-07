@@ -133,14 +133,16 @@ export const VirtualChef = () => {
     setTimeout(() => {
       setMessages(prev => [...prev, chefMessage]);
       
+      // DISABLED AUTO-SPEECH: No more robotic voice
       // Speak the response
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(chefResponse);
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        utterance.volume = 0.8;
-        window.speechSynthesis.speak(utterance);
-      }
+      // if ('speechSynthesis' in window) {
+      //   const utterance = new SpeechSynthesisUtterance(chefResponse);
+      //   utterance.rate = 0.9;
+      //   utterance.pitch = 1;
+      //   utterance.volume = 0.8;
+      //   window.speechSynthesis.speak(utterance);
+      // }
+      console.log('VirtualChef speech disabled:', chefResponse);
       
       toast({
         title: "Chef Savarin",

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Sparkles, Eye, Brain } from "lucide-react";
+import { ArrowLeft, ChefHat, Utensils, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { RevolutionaryAIChef } from "@/components/RevolutionaryAIChef";
 
@@ -8,7 +8,7 @@ export const RevolutionaryDemo = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-warm p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -17,7 +17,7 @@ export const RevolutionaryDemo = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 hover:bg-accent"
+              className="flex items-center gap-2 hover:bg-gray-100 text-gray-600"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Home
@@ -26,61 +26,60 @@ export const RevolutionaryDemo = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate('/about')}
-              className="text-sm"
+              className="text-sm border-gray-300 text-gray-600 hover:bg-gray-50"
             >
               My Story
             </Button>
           </div>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">Revolutionary AI</span>
+            <ChefHat className="w-5 h-5 text-orange-500" />
+            <span className="text-sm font-medium text-orange-600">AI Chef Demo</span>
           </div>
         </div>
 
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-charcoal mb-6">
-            🚀 Revolutionary AI Chef
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            🍳 AI Chef Demo
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            The world's first AI sous chef that <strong>sees, thinks, and guides</strong> you through cooking in real-time. 
-            Using computer vision and conversational AI to revolutionize your kitchen experience.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            Experience how AI can help you cook better with step-by-step guidance, helpful tips, and real-time assistance.
           </p>
           
-          {/* Features Preview */}
+          {/* Simple Features */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="border-primary/20 bg-gradient-subtle">
+            <Card className="border-orange-200 bg-orange-50">
               <CardHeader className="text-center">
-                <Eye className="w-8 h-8 mx-auto text-primary mb-2" />
-                <CardTitle className="text-lg">Computer Vision</CardTitle>
+                <Utensils className="w-8 h-8 mx-auto text-orange-600 mb-2" />
+                <CardTitle className="text-lg text-gray-900">Step-by-Step</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  AI watches your cooking and recognizes ingredients, techniques, and progress
+                <p className="text-sm text-gray-600">
+                  Clear instructions that guide you through each cooking step
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="border-primary/20 bg-gradient-subtle">
+            <Card className="border-orange-200 bg-orange-50">
               <CardHeader className="text-center">
-                <Brain className="w-8 h-8 mx-auto text-primary mb-2" />
-                <CardTitle className="text-lg">Real AI Intelligence</CardTitle>
+                <Users className="w-8 h-8 mx-auto text-orange-600 mb-2" />
+                <CardTitle className="text-lg text-gray-900">Smart Help</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Powered by advanced AI models that understand cooking context and provide expert guidance
+                <p className="text-sm text-gray-600">
+                  Get answers to your cooking questions and helpful tips
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="border-primary/20 bg-gradient-subtle">
+            <Card className="border-orange-200 bg-orange-50">
               <CardHeader className="text-center">
-                <Sparkles className="w-8 h-8 mx-auto text-primary mb-2" />
-                <CardTitle className="text-lg">Adaptive Learning</CardTitle>
+                <ChefHat className="w-8 h-8 mx-auto text-orange-600 mb-2" />
+                <CardTitle className="text-lg text-gray-900">Learn & Improve</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Gets smarter about your preferences and cooking style over time
+                <p className="text-sm text-gray-600">
+                  Build your cooking skills with every recipe you make
                 </p>
               </CardContent>
             </Card>
@@ -91,35 +90,17 @@ export const RevolutionaryDemo = () => {
         <RevolutionaryAIChef />
 
         {/* Instructions */}
-        <Card className="mt-12 bg-gradient-accent text-primary-foreground">
+        <Card className="mt-12 bg-orange-500 text-white">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
-              How to Experience the Revolution
+              <ChefHat className="w-5 h-5" />
+              How to Use the Demo
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold mb-2">🎬 Start the Experience:</h4>
-                <ol className="text-sm space-y-1 opacity-90">
-                  <li>1. Click "Start Chef" to activate the AI</li>
-                  <li>2. Click "Start Vision" to enable camera</li>
-                  <li>3. Show ingredients or cooking tools to the camera</li>
-                  <li>4. Watch as AI recognizes and provides guidance!</li>
-                </ol>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">🧠 What Makes It Revolutionary:</h4>
-                <ul className="text-sm space-y-1 opacity-90">
-                  <li>• Real computer vision using Hugging Face AI</li>
-                  <li>• Live ingredient and tool recognition</li>
-                  <li>• Context-aware cooking guidance</li>
-                  <li>• Adaptive AI personality and responses</li>
-                  <li>• Built for mobile cooking experiences</li>
-                </ul>
-              </div>
-            </div>
+            <p className="text-orange-50">
+              Try asking the AI chef questions about cooking, request recipe help, or get step-by-step guidance for any dish you want to make.
+            </p>
           </CardContent>
         </Card>
       </div>

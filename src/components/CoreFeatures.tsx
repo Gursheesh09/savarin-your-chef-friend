@@ -1,48 +1,47 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Brain, Shuffle, ChefHat } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const coreFeatures = [
   {
     icon: MessageSquare,
-    title: "Thoughtful Voice",
-    description: "Hands-free guidance while you cook. Ask for timings, temps, and techniques; Savarin answers in a calm, chef-trained voice.",
+    title: "Natural Conversation",
+    description: "Ask questions naturally while you cook. Get helpful answers about timing, temperature, and techniques.",
   },
   {
     icon: Brain,
-    title: "Intuitive Presence",
-    description: "Understands pace and context. If you're behind, it slows; if you're ready, it advances.",
+    title: "Smart Assistance",
+    description: "The chef understands your cooking pace and provides guidance that matches your skill level and timing.",
   },
   {
     icon: Shuffle,
-    title: "Smart Substitutions", 
-    description: "Out of shallots? No problem. Savarin suggests pro-level swaps without compromising flavor.",
+    title: "Ingredient Substitutions", 
+    description: "Missing an ingredient? Get smart alternatives that maintain the dish's flavor and quality.",
   },
   {
     icon: ChefHat,
-    title: "Chef Modes",
-    description: "Cook in styles inspired by partner chefs—French bistro, Tuscan home, Japanese izakaya, and more.",
+    title: "Multiple Styles",
+    description: "Learn different cooking styles - from simple home cooking to restaurant-quality techniques.",
   },
 ];
 
 export const CoreFeatures = () => {
-  const handleBeginCooking = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Savarin is launching soon. Join our waitlist to be first to cook with AI.",
-    });
+  const navigate = useNavigate();
+
+  const handleStartCooking = () => {
+    navigate('/demo');
   };
 
   return (
-    <section id="core-features" className="py-20 px-6 bg-gradient-warm">
+    <section id="core-features" className="py-20 px-6 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6">
-            Core Features
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            How It Works
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to transform your cooking experience
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Simple, effective cooking guidance that actually helps you in the kitchen
           </p>
         </div>
         
@@ -50,16 +49,16 @@ export const CoreFeatures = () => {
           {coreFeatures.map((feature, index) => (
             <Card 
               key={index}
-              className="bg-card/80 backdrop-blur-sm border-border/50 hover:shadow-elevated transition-all duration-300 hover:scale-105"
+              className="bg-white border-0 shadow-sm hover:shadow-md transition-all duration-300"
             >
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-hero rounded-xl mb-4 flex items-center justify-center">
-                  <feature.icon className="w-6 h-6 text-primary-foreground" />
+                <div className="w-12 h-12 bg-orange-100 rounded-xl mb-4 flex items-center justify-center">
+                  <feature.icon className="w-6 h-6 text-orange-600" />
                 </div>
-                <CardTitle className="text-charcoal">{feature.title}</CardTitle>
+                <CardTitle className="text-gray-900">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-muted-foreground leading-relaxed">
+                <CardDescription className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </CardDescription>
               </CardContent>
@@ -68,11 +67,14 @@ export const CoreFeatures = () => {
         </div>
         
         <div className="text-center">
-          <Button variant="hero" size="xl" className="mb-4" onClick={handleBeginCooking}>
-            Begin Cooking
+          <Button 
+            onClick={handleStartCooking}
+            className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Try It Now
           </Button>
-          <p className="text-sm text-muted-foreground">
-            No login needed. Try a 3-minute guided recipe.
+          <p className="text-sm text-gray-500 mt-4">
+            No account needed. Start cooking in minutes.
           </p>
         </div>
       </div>

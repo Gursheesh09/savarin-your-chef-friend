@@ -1,34 +1,41 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import { Demo } from "./pages/Demo";
-import { RevolutionaryDemo } from "./pages/RevolutionaryDemo";
-import { CookingSessions } from "./pages/CookingSessions";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
+import { AppLayout } from "@/components/AppLayout";
+import { VirtualCall } from "./pages/VirtualCall";
+import { AIChefAgent } from "./pages/AIChefAgent";
+import { SimpleMarcoChatPage } from "./pages/SimpleMarcoChat";
+import { GroqChefAvatarsPage } from "./pages/GroqChefAvatars";
+import { LiveChefMarketplacePage } from "./pages/LiveChefMarketplace";
+import { Auth } from "./pages/Auth";
 import { About } from "./pages/About";
+import { Demo } from "./pages/Demo";
+import { CookingSessions } from "./pages/CookingSessions";
+import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./contexts/AuthContext";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <div>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/demo" element={<RevolutionaryDemo />} />
-          <Route path="/old-demo" element={<Demo />} />
-          <Route path="/cooking-sessions" element={<CookingSessions />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<AppLayout><About /></AppLayout>} />
+          <Route path="/demo" element={<AppLayout><Demo /></AppLayout>} />
+          <Route path="/cooking-sessions" element={<AppLayout><CookingSessions /></AppLayout>} />
+          <Route path="/facetime" element={<AppLayout><VirtualCall /></AppLayout>} />
+          <Route path="/ai-chef" element={<AppLayout><AIChefAgent /></AppLayout>} />
+          <Route path="/marco" element={<AppLayout><SimpleMarcoChatPage /></AppLayout>} />
+          <Route path="/groq-chefs" element={<AppLayout><GroqChefAvatarsPage /></AppLayout>} />
+          <Route path="/live-chef-marketplace" element={<AppLayout><LiveChefMarketplacePage /></AppLayout>} />
+          <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<AppLayout><NotFound /></AppLayout>} />
         </Routes>
-      </BrowserRouter>
-    </div>
-  </QueryClientProvider>
-);
+        <Toaster />
+      </Router>
+    </AuthProvider>
+  );
+}
 
 export default App;

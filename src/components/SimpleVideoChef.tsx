@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useConversation } from "@11labs/react";
 import chefPortrait from "@/assets/chef-marco.png";
 
-const API_KEY = "sk-d34fe68b0a6d90fd29c92812830ed71df2ebac74d0877955";
+const API_KEY = process.env.REACT_APP_ELEVEN_LABS_API_KEY || "";
 
 export const SimpleVideoChef: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -79,31 +79,34 @@ export const SimpleVideoChef: React.FC = () => {
     try { await (conversation as any).endSession?.(); } catch {}
   };
 
+  // DISABLED AUTO-SPEECH: No more robotic voice
   // Speak Chef Marco's responses using browser TTS as a fallback
-  useEffect(() => {
-    if (!currentMessage) return;
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(currentMessage);
-      u.rate = 0.95;
-      u.pitch = 1.02;
-      u.volume = 0.9;
-      window.speechSynthesis.speak(u);
-    }
-  }, [currentMessage]);
+  // useEffect(() => {
+  //   if (!currentMessage) return;
+  //   if ('speechSynthesis' in window) {
+  //     window.speechSynthesis.cancel();
+  //     const u = new SpeechSynthesisUtterance(currentMessage);
+  //     u.rate = 0.95;
+  //     u.pitch = 1.02;
+  //     u.volume = 0.9;
+  //     window.speechSynthesis.speak(u);
+  //   }
+  // }, [currentMessage]);
 
   const testVoice = () => {
     try {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance("Hi, I'm Chef Marco. If you can hear me, voice is working.");
-        u.rate = 0.95;
-        u.pitch = 1.02;
-        u.volume = 1;
-        window.speechSynthesis.speak(u);
-      } else {
-        toast({ title: "Voice not available", description: "Your browser doesn't support speech output.", variant: "destructive" });
-      }
+      // DISABLED AUTO-SPEECH: No more robotic voice
+      // if ('speechSynthesis' in window) {
+      //   window.speechSynthesis.cancel();
+      //   const u = new SpeechSynthesisUtterance("Hi, I'm Chef Marco. If you can hear me, voice is working.");
+      //   u.rate = 0.95;
+      //   u.pitch = 1.02;
+      //   u.volume = 1;
+      //   window.speechSynthesis.speak(u);
+      // } else {
+      //   toast({ title: "Voice not available", description: "Your browser doesn't support speech output.", variant: "destructive" });
+      // }
+      console.log('SimpleVideoChef testVoice disabled - no speech output');
     } catch (e) {
       toast({ title: "Playback blocked", description: "Click anywhere and try Test Voice again.", variant: "destructive" });
     }

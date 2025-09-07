@@ -25,13 +25,13 @@ const faqs = [
 
 export const FAQ = () => {
   return (
-    <section className="py-20 px-6 bg-gradient-subtle">
+    <section className="py-20 px-6 bg-white">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Frequently Asked Questions
           </h2>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-gray-600">
             Everything you need to know about cooking with Savarin
           </p>
         </div>
@@ -41,12 +41,12 @@ export const FAQ = () => {
             <AccordionItem 
               key={index} 
               value={`item-${index}`}
-              className="bg-card/80 backdrop-blur-sm rounded-lg border border-border/50 px-6"
+              className="bg-gray-50 rounded-lg border border-gray-200 px-6 hover:border-orange-300 transition-colors"
             >
-              <AccordionTrigger className="text-left text-charcoal font-semibold hover:text-primary transition-colors">
+              <AccordionTrigger className="text-left text-gray-900 font-semibold hover:text-orange-600 transition-colors">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pt-2">
+              <AccordionContent className="text-gray-600 leading-relaxed pt-2">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
